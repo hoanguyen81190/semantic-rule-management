@@ -14,8 +14,20 @@ class ACRESTManager {
           .catch((error) => this.handleError(error))
   };
 
+  getAllConsumers(callback) {
+    axios.get(AC_Rest_APIs.GET_ALL_CONSUMER_SYSTEMS)
+          .then((response) => this.handleData(response, callback))
+          .catch((error) => this.handleError(error))
+  };
+
   getAllRules(callback) {
     axios.get(AC_Rest_APIs.GET_ALL_RULES)
+          .then((response) => this.handleData(response, callback))
+          .catch((error) => this.handleError(error))
+  };
+
+  getAllRules2(callback) {
+    axios.get(AC_Rest_APIs.GET_ALL_RULES2)
           .then((response) => this.handleData(response, callback))
           .catch((error) => this.handleError(error))
   };

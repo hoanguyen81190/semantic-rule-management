@@ -23,19 +23,26 @@ import TestComponent from '../../components/Test/TestComponent'
 import NestedList from '../../components/List/NestedList'
 import RuleCard from '../../components/Rule/RuleCard'
 
-import store from '../../core/store';
-import ac_rest_manager from '../../core/ac_rest_manager.js';
+import RDFGraph from '../../components/Rule/RDFGraph'
+
+import store from '../../core/store'
+import ac_rest_manager from '../../core/ac_rest_manager.js'
+
+import sosaTurtle from './sosa.ttl'
+import saiOWL from './SAI.owl'
+import { jenaRuleParser, turtleParser } from '../../core/rdf_parser'
 
 const useStyles = makeStyles((theme) => ({
 
 }));
 
-const ConsumerSystems = (props) => {
+const Ontology = (props) => {
   //const classes = useStyles()
   const { classes, ...rest } = props
   const [dense, setDense] = React.useState(false)
   const [secondary, setSecondary] = React.useState(false)
   const [consumerSystems, setConsumerSystems] = React.useState([])
+  const [rdfTriples, setRdfTriples] = React.useState(null)
 
   const [selectedIndex, setSelectedIndex] = React.useState(-1)
   const [open, setOpen] = React.useState({})
@@ -44,18 +51,22 @@ const ConsumerSystems = (props) => {
   }
 
   useEffect(() => {
-    ac_rest_manager.getAllConsumers((data) => {
-      if (data) {
-        setConsumerSystems(data)
-      }
-
-    })
+    fetch(saiOWL)
+      .then(r => r.text())
+      .then(text => {
+        var turtleQuads = turtleParser(text)
+        console.log("QUADS", turtleQuads)
+        setRdfTriples(turtleQuads)
+      })
   }, [])
 
+
   const handleListItemClick = (event, iindex) => {
+    console.log("handle click", open[iindex])
     // setOpen(!open)
     if (open[iindex] === undefined) {
       setOpen({...open, [iindex]: true})
+      console.log("open", open)
     }
     else {
       setOpen({...open, [iindex]: !open[iindex]})
@@ -65,46 +76,14 @@ const ConsumerSystems = (props) => {
     setSelectedIndex(iindex)
   }
 
-  const content =
-    <List>
-    {consumerSystems.map((sitem, sindex) => {
-      console.log("RIGHT BEFORE ERROR", sitem);
-        var consumerInfo = JSON.parse(sitem.description)
-        return <div>
-          <ListItem key={sindex}
-                    button
-                    selected={selectedIndex === sindex}
-                    onClick={(event) => handleListItemClick(event, sindex)}>
-            <ListItemAvatar>
-              <Avatar>
-                <FolderIcon />
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary={sitem.consumer} />
-            {open[sindex] ? <ExpandLess /> : <ExpandMore />}
-            <ListItemSecondaryAction>
-              <IconButton edge="end" aria-label="delete">
-                <DeleteIcon />
-              </IconButton>
-            </ListItemSecondaryAction>
-          </ListItem>
-          <Collapse in={open[sindex]} timeout="auto" unmountOnExit>
-            <Typography paragraph>
-              {consumerInfo.serviceName}
-            </Typography>
-            <Typography paragraph>
-              {consumerInfo.serviceEndpoint}
-            </Typography>
-          </Collapse>
-        </div>
-      }
-
-    )}
-    </List>
+  var content = <div />
+  if (rdfTriples) {
+    content = <RDFGraph rdfTriples={rdfTriples} />
+  }
 
   return ( content )
 }
 
 
 
-export default withStyles(useStyles)(ConsumerSystems)
+export default withStyles(useStyles)(Ontology)

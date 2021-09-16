@@ -5,13 +5,18 @@ import { createStore } from 'redux';
 */
 
 const initialState = {
-  consumerSystems: []
+  consumerSystems: [],
+  knowledgebase_prefix: []
 };
 
 const store = createStore ((state = initialState, action) => {
   switch(action.type) {
     case 'ADD_CONSUMER_SYSTEMS': {
       return { ...state, consumerSystems: state.consumerSystems.concat(action.consumerSystems) };
+    }
+
+    case 'ADD_KNOWLEDGE_BASE_PREFIX': {
+      return { ...state, knowledgebase_prefix: state.knowledgebase_prefix.concat(action.prefix)}
     }
 
     default:

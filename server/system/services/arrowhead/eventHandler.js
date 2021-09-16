@@ -4,7 +4,7 @@
 
 import networkService from '../network/networkService'
 import axios from 'axios'
-import { config } from '../config/config'
+import { config } from '../../config/config'
 import { coreSystemInfo } from '../../utils/startupHelper'
 
 export async function echo() {

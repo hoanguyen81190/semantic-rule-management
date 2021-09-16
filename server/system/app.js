@@ -20,6 +20,7 @@ import { readCoreSystemInfoFile } from './utils/startupHelper'
 import { echo as echoSR, register, unregister } from './services/arrowhead/serviceRegistry'
 import { echo as echoAUTH } from './services/arrowhead/authorization'
 import { echo as echoORCH } from './services/arrowhead/orchestrator'
+import { echo as echoDM, getSystemList, dataPut} from './services/arrowhead/dataManager'
 import { validateENV } from './utils/startupHelper'
 import { serviceRegistryEntry } from './utils/systemUtils'
 
@@ -90,6 +91,17 @@ export async function start () {
       const response = await echoORCH()
       console.log(response.green)
     })
+    .then( async () => {
+      const response = await echoDM()
+      console.log(response.green)
+    })
+    .then( async () => {
+      const response = await getSystemList()
+      console.log('gethistorian', response)
+    })
+    // .then( async () => {
+    //   readTurtleFile()
+    // })
     .then(() => {
       return new Promise((resolve) => {
         if(config.serverSSLEnabled) {

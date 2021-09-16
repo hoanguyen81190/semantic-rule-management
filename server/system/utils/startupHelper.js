@@ -54,6 +54,9 @@ export async function createCoreSystemInfoFile(){
   const eventHandlerServiceQueryForm = {
     serviceDefinitionRequirement: "event-subscribe"
   }
+  const dataManagerServiceQueryForm = {
+    serviceDefinitionRequirement: "historian"
+  }
 
 
   // Get data for Auth (mandatory core system)
@@ -65,11 +68,14 @@ export async function createCoreSystemInfoFile(){
   // Get data for Event Handler (supporting core system)
   const ehData = await query(eventHandlerServiceQueryForm)
 
+  const dmData = await query(dataManagerServiceQueryForm)
+
 
   coreSystemInfo = {
     "authorization": authData.serviceQueryData.length ? authData.serviceQueryData[0].provider : null,
     "orchestrator": orchData.serviceQueryData.length ? orchData.serviceQueryData[0].provider : null,
-    "eventhandler": ehData.serviceQueryData.length ? ehData.serviceQueryData[0].provider : null
+    "eventhandler": ehData.serviceQueryData.length ? ehData.serviceQueryData[0].provider : null,
+    "datamanager": dmData.serviceQueryData.length ? dmData.serviceQueryData[0].provider : null
   }
 
   // Add here logic for other supporting core systems query you wish to use.

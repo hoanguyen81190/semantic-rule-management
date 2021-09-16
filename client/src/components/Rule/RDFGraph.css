@@ -1,0 +1,14 @@
+.rdfGraphContainer {
+  padding-left: 15%;
+  width: 70%;
+  height: 80%;
+  align-items: center;
+  align-content: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.rdfGraphCanvas {
+  width: 500px;
+  height: 500px;
+}
