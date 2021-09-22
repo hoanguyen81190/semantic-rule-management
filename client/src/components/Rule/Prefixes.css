@@ -1,7 +1,11 @@
 .prefixChip {
-  padding-left: 2%;
+  padding: 0% 2% 1% 2%;
   margin: 2%;
   align-items: center;
   align-content: center;
   border-radius: 10px;
+}
+
+.devider{
+  margin: 5px 0 0 9px;
 }

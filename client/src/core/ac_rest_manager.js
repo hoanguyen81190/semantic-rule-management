@@ -66,6 +66,13 @@ class ACRESTManager {
     console.log("Something went wrong");
     console.log(error);
   }
+
+  sparqlQuery(type, query, callback) {
+    axios.post(AC_Rest_APIs.SPARQL_QUERY, { type: type,
+                                            query: query })
+          .then((response) => this.handleData(response, callback))
+          .catch((error) => this.handleError(error))
+  }
 }
 
 

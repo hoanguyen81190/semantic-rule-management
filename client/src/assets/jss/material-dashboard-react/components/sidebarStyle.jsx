@@ -157,7 +157,7 @@ const sidebarStyle = theme => ({
     color: '#FFFFFF'
   },
   nested: {
-    paddingLeft: theme.spacing.unit * 4
+    paddingLeft: theme.spacing(4)
   },
   whiteFont: {
     color: '#FFFFFF'

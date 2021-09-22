@@ -40,6 +40,28 @@ if(config.serverSSLEnabled) {
   }
 }
 
+// async function testComunica() {
+//   const newEngine = require('@comunica/actor-init-sparql-file').newEngine;
+//   const myEngine = newEngine();
+//
+//   const config = { sources: ['C:/workingFolder2021/PhD/semantic-rule-management/server/SAI.ttl'] }
+//
+//   const query = `
+//   PREFIX owl: <http://www.w3.org/2002/07/owl#>
+//   PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+//
+//   SELECT ?s WHERE {
+//     ?s rdf:type owl:ObjectProperty.
+//   } LIMIT 10
+//   `
+//
+//   const { bindingsStream } = await myEngine.query(query, config)
+//   bindingsStream.on('data', (data) => console.log(data.toObject()));
+//   bindingsStream.on('end', () => console.log('Done!'))
+//
+//   console.log("HERE")
+// }
+
 export async function initExpress () {
   validateENV()
 
@@ -67,6 +89,8 @@ export async function initExpress () {
 }
 
 export async function start () {
+  // testComunica()
+
   return initExpress()
     .then(async () => {
       const response = await echoSR()
@@ -95,10 +119,10 @@ export async function start () {
       const response = await echoDM()
       console.log(response.green)
     })
-    .then( async () => {
-      const response = await getSystemList()
-      console.log('gethistorian', response)
-    })
+    // .then( async () => {
+    //   const response = await getSystemList()
+    //   console.log('gethistorian', response)
+    // })
     // .then( async () => {
     //   readTurtleFile()
     // })

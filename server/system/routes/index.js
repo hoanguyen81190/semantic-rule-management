@@ -5,8 +5,9 @@
 import Router from 'express-promise-router'
 import networkService from '../services/network/networkService'
 import { orchestration, consumeServiceHTTP } from '../services/arrowhead/orchestrator'
+import { sparqlSelectQuery, sparqlConstructQuery } from '../ontology/comunica'
 import { HTTP_INTERFACES, OrchestrationFlags, OrchestratorFormBuilder } from '../utils/OrchestratorFormBuilder'
-import { PROXY_APIS, AUTONOMIC_ORCHESTRATION_APIS } from '../utils/constants'
+import { PROXY_APIS, AUTONOMIC_ORCHESTRATION_APIS, COMUNICA_APIS } from '../utils/constants'
 const router = Router()
 
 router.get(PROXY_APIS.GET_ALL_CONSUMER_SYSTEMS, (req, res, next) => {
@@ -86,6 +87,19 @@ router.get(PROXY_APIS.GET_ALL_QUERIES, (req, res, next) => {
 
 router.post(PROXY_APIS.TEST, (req, res, next) => {
   res.json({text: "gotcha"})
+})
+
+//------------------------COMUNICA-------------------------
+router.post(COMUNICA_APIS.SPARQL_QUERY, async (req, res, next) => {
+  const { type, query } = req.body
+  if (type === "select") {
+    var result = await sparqlSelectQuery(query)
+    res.json({data: result})
+  }
+  else if (type === "construct") {
+    var result = await sparqlConstructQuery(query)
+    res.json({data: result})
+  }
 })
 
 export default router

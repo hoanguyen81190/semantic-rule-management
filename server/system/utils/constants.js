@@ -23,3 +23,7 @@ export const AUTONOMIC_ORCHESTRATION_APIS = {
 	PUSH: "auto-orchestration-push",
 	GET: "auto-orchestration-get-adapations"
 }
+
+export const COMUNICA_APIS = {
+  SPARQL_QUERY: "/sparqlQuery"
+}

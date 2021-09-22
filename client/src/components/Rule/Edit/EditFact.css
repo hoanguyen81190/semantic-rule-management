@@ -1,0 +1,13 @@
+.root {
+  margin: theme.spacing(1);
+}
+
+.card {
+  margin: 2%;
+}
+
+.autoComplete {
+  height: 140;
+  width: 160;
+  font-size: 5px;
+}

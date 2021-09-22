@@ -23,8 +23,8 @@ import TestComponent from '../../components/Test/TestComponent'
 import NestedList from '../../components/List/NestedList'
 import RuleCard from '../../components/Rule/RuleCard'
 
-import store from '../../core/store';
-import ac_rest_manager from '../../core/ac_rest_manager.js';
+import store from '../../core/store'
+import ac_rest_manager from '../../core/ac_rest_manager.js'
 
 const useStyles = makeStyles((theme) => ({
 

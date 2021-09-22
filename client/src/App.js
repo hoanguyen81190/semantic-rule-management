@@ -9,17 +9,17 @@ import './App.css';
 
 function App() {
   //retrieve the prefixes
-  ac_rest_manager.getAllRules2((pref) => {
-    if (pref) {
-      var prefAction = {
-        type: 'ADD_KNOWLEDGE_BASE_PREFIX',
-        prefix: pref
-      };
-
-      store.dispatch(prefAction);
-    }
-
-  })
+  // ac_rest_manager.getAllRules2((pref) => {
+  //   if (pref) {
+  //     var prefAction = {
+  //       type: 'ADD_KNOWLEDGE_BASE_PREFIX',
+  //       prefix: pref
+  //     };
+  //
+  //     store.dispatch(prefAction);
+  //   }
+  //
+  // })
   return (
     <div className="App">
       <Switch>

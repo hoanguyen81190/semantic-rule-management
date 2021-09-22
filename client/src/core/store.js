@@ -6,17 +6,32 @@ import { createStore } from 'redux';
 
 const initialState = {
   consumerSystems: [],
-  knowledgebase_prefix: []
+  knowledgebase_prefix: [],
+  ontology:[],
+  ontology_classes: [],
+  ontology_properties: []
 };
 
 const store = createStore ((state = initialState, action) => {
   switch(action.type) {
     case 'ADD_CONSUMER_SYSTEMS': {
-      return { ...state, consumerSystems: state.consumerSystems.concat(action.consumerSystems) };
+      return { ...state, consumerSystems: state.consumerSystems.concat(action.consumerSystems) }
     }
 
     case 'ADD_KNOWLEDGE_BASE_PREFIX': {
       return { ...state, knowledgebase_prefix: state.knowledgebase_prefix.concat(action.prefix)}
+    }
+
+    case 'ALL_ONTOLOGY_INSTANCES': {
+      return { ...state, ontology: action.ontology}
+    }
+
+    case 'ALL_ONTOLOGY_CLASSES': {
+      return { ...state, ontology_classes: action.ontology_classes}
+    }
+
+    case 'ALL_ONTOLOGY_PROPERTIES': {
+      return { ...state, ontology_properties: action.ontology_properties}
     }
 
     default:

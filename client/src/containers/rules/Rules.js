@@ -1,21 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'
 import { Redirect, Route, Switch } from 'react-router-dom'
 
-import { makeStyles } from '@material-ui/core/styles';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import ListItemText from '@material-ui/core/ListItemText';
-import Avatar from '@material-ui/core/Avatar';
-import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
-import DeleteIcon from '@material-ui/icons/Delete';
-import IconButton from '@material-ui/core/IconButton';
-import ExpandLess from '@material-ui/icons/ExpandLess';
-import ExpandMore from '@material-ui/icons/ExpandMore';
-import Collapse from '@material-ui/core/Collapse';
-import { Typography } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles'
+import List from '@material-ui/core/List'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemAvatar from '@material-ui/core/ListItemAvatar'
+import ListItemIcon from '@material-ui/core/ListItemIcon'
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
+import ListItemText from '@material-ui/core/ListItemText'
+import Avatar from '@material-ui/core/Avatar'
+import LibraryBooksIcon from '@material-ui/icons/LibraryBooks'
+import DeleteIcon from '@material-ui/icons/Delete'
+import IconButton from '@material-ui/core/IconButton'
+import ExpandLess from '@material-ui/icons/ExpandLess'
+import ExpandMore from '@material-ui/icons/ExpandMore'
+import Collapse from '@material-ui/core/Collapse'
+import AddIcon from '@material-ui/icons/Add'
+import { Typography } from '@material-ui/core'
 import withStyles from '@material-ui/core/styles/withStyles'
 
 import TestComponent from '../../components/Test/TestComponent'
@@ -24,6 +25,7 @@ import NestedList from '../../components/List/NestedList'
 import RuleCard from '../../components/Rule/RuleCard'
 import Prefixes from '../../components/Rule/Prefixes'
 import RuleComponent from '../../components/Rule/RuleComponent'
+import EditRule from '../../components/Rule/Edit/EditRule'
 
 import store from '../../core/store'
 import ac_rest_manager from '../../core/ac_rest_manager.js'
@@ -47,6 +49,7 @@ const Rules = (props) => {
 
   const [selectedIndex, setSelectedIndex] = React.useState(-1)
   const [open, setOpen] = React.useState({})
+  const [isAdding, setIsAdding] = React.useState(true)
   const handleClick = () => {
 
   }
@@ -59,6 +62,16 @@ const Rules = (props) => {
          setPrefixes(parseResult.prefixes)
          setJenaRules(parseResult.rules)
       })
+
+    // const query = `
+    //   PREFIX owl: <http://www.w3.org/2002/07/owl#>
+    //   PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    //
+    //   SELECT ?s WHERE {
+    //     ?s rdf:type owl:ObjectProperty.
+    //   } LIMIT 10
+    //   `
+    // sparqlQuery(query)
   }, [])
 
   // useEffect(() => {
@@ -70,12 +83,16 @@ const Rules = (props) => {
   //   })
   // }, [])
 
+
+  const editRuleCallback = (close) => {
+    console.log("reason", close)
+    setIsAdding(false)
+  }
+
   const handleListItemClick = (event, iindex) => {
-    console.log("handle click", open[iindex])
     // setOpen(!open)
     if (open[iindex] === undefined) {
       setOpen({...open, [iindex]: true})
-      console.log("open", open)
     }
     else {
       setOpen({...open, [iindex]: !open[iindex]})
@@ -85,37 +102,50 @@ const Rules = (props) => {
     setSelectedIndex(iindex)
   }
 
+  const handleAddRuleClick = () => {
+    //collapse all Rules
+    setIsAdding(true)
+    console.info('you want to add', open)
+  }
+
+  var rules = <List>
+  {jenaRules.map((sitem, sindex) =>
+      <div key={sindex}>
+        <ListItem
+                  button
+                  selected={selectedIndex === sindex}
+                  onClick={(event) => handleListItemClick(event, sindex)}>
+          <ListItemAvatar>
+            <Avatar>
+              <LibraryBooksIcon />
+            </Avatar>
+          </ListItemAvatar>
+          <ListItemText primary={sitem.name} />
+          {open[sindex] ? <ExpandLess /> : <ExpandMore />}
+          <ListItemSecondaryAction>
+            <IconButton edge="end" aria-label="delete">
+              <DeleteIcon />
+            </IconButton>
+          </ListItemSecondaryAction>
+        </ListItem>
+        <Collapse in={open[sindex]} timeout="auto" unmountOnExit>
+          <RuleComponent jenaRules={sitem} />
+        </Collapse>
+      </div>
+    )}
+  </List>
+
+  var mainDisplay = (!isAdding) ? rules : <EditRule callback={editRuleCallback}/>
+
   var content =
     <div>
     <Prefixes />
-      <List>
-      {jenaRules.map((sitem, sindex) =>
-          <div>
-            <ListItem key={sindex}
-                      button
-                      selected={selectedIndex === sindex}
-                      onClick={(event) => handleListItemClick(event, sindex)}>
-              <ListItemAvatar>
-                <Avatar>
-                  <LibraryBooksIcon />
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText primary={sitem.name} />
-              {open[sindex] ? <ExpandLess /> : <ExpandMore />}
-              <ListItemSecondaryAction>
-                <IconButton edge="end" aria-label="delete">
-                  <DeleteIcon />
-                </IconButton>
-              </ListItemSecondaryAction>
-            </ListItem>
-            <Collapse in={open[sindex]} timeout="auto" unmountOnExit>
-              <RuleComponent jenaRules={sitem} />
-            </Collapse>
-          </div>
-        )}
-      </List>
+    <IconButton onClick={handleAddRuleClick}>
+      <AddIcon/>
+    </IconButton>
+    {mainDisplay}
     </div>
-  return ( content )
+  return (content)
 }
 
 

@@ -6,7 +6,9 @@
   GET_ALL_QUERIES: "api/getAllQueries",
   GET_KNOWLEDGE: "/api/getKnowledge",
   POST_REGISTER_RULE: "/api/register",
-  POST_DELETE_RULE: "/api/delete"
+  POST_DELETE_RULE: "/api/delete",
+
+  SPARQL_QUERY: "/api/sparqlQuery",
 }
 
 export default AC_Rest_APIs;
