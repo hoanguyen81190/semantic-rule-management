@@ -47,7 +47,7 @@ export default function EditRule(props) {
       </Card>
       </Container>
       <Button variant="contained" onClick={handleOKClick}>
-        OK
+        ADD NEW RULE
       </Button>
       <Button variant="contained" onClick={handleCancelClick} >
         Cancel

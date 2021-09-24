@@ -25,7 +25,7 @@ import NestedList from '../../components/List/NestedList'
 import RuleCard from '../../components/Rule/RuleCard'
 import Prefixes from '../../components/Rule/Prefixes'
 import RuleComponent from '../../components/Rule/RuleComponent'
-import EditRule from '../../components/Rule/Edit/EditRule'
+import EditRuleComponent from '../../components/Rule/Edit/EditRuleComponent'
 
 import store from '../../core/store'
 import ac_rest_manager from '../../core/ac_rest_manager.js'
@@ -49,7 +49,7 @@ const Rules = (props) => {
 
   const [selectedIndex, setSelectedIndex] = React.useState(-1)
   const [open, setOpen] = React.useState({})
-  const [isAdding, setIsAdding] = React.useState(true)
+  const [isAdding, setIsAdding] = React.useState(false)
   const handleClick = () => {
 
   }
@@ -109,41 +109,53 @@ const Rules = (props) => {
   }
 
   var rules = <List>
+    <div key={0}>
+      <ListItem
+                button
+                selected={selectedIndex === 0}
+                onClick={(event) => handleListItemClick(event, 0)}>
+          <AddIcon/>
+          <Typography>
+            Add new rule
+          </Typography>
+      </ListItem>
+      <Collapse in={open[0]} timeout="auto" unmountOnExit>
+        <EditRuleComponent callback={editRuleCallback}/>
+      </Collapse>
+    </div>
   {jenaRules.map((sitem, sindex) =>
-      <div key={sindex}>
+      <div key={sindex + 1}>
         <ListItem
                   button
                   selected={selectedIndex === sindex}
-                  onClick={(event) => handleListItemClick(event, sindex)}>
+                  onClick={(event) => handleListItemClick(event, sindex + 1)}>
           <ListItemAvatar>
             <Avatar>
               <LibraryBooksIcon />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary={sitem.name} />
-          {open[sindex] ? <ExpandLess /> : <ExpandMore />}
+          <ListItemText primary={sitem.name + ': ' + sitem.statement.head} />
+          {open[sindex + 1] ? <ExpandLess /> : <ExpandMore />}
           <ListItemSecondaryAction>
             <IconButton edge="end" aria-label="delete">
               <DeleteIcon />
             </IconButton>
           </ListItemSecondaryAction>
         </ListItem>
-        <Collapse in={open[sindex]} timeout="auto" unmountOnExit>
+        <Collapse in={open[sindex + 1]} timeout="auto" unmountOnExit>
           <RuleComponent jenaRules={sitem} />
         </Collapse>
       </div>
     )}
   </List>
 
-  var mainDisplay = (!isAdding) ? rules : <EditRule callback={editRuleCallback}/>
+  //var mainDisplay = (!isAdding) ? rules : <EditRule callback={editRuleCallback}/>
 
   var content =
     <div>
     <Prefixes />
-    <IconButton onClick={handleAddRuleClick}>
-      <AddIcon/>
-    </IconButton>
-    {mainDisplay}
+
+    {rules}
     </div>
   return (content)
 }

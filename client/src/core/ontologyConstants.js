@@ -93,6 +93,10 @@ const ontologyConstants = {
   }
 }
 
+const ontologyList = [ontologyConstants.BASE, ontologyConstants.SAI, ontologyConstants.OWL,
+                      ontologyConstants.XSD, ontologyConstants.RDF, ontologyConstants.RDFS,
+                      ontologyConstants.SOSA]
+
 const ontologyLookUp = new Map()
 ontologyLookUp.set("http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT", ontologyConstants.BASE.name)
 ontologyLookUp.set("https://arrowhead.eu/arrowheadtools/sai", ontologyConstants.SAI.name)
@@ -103,4 +107,4 @@ ontologyLookUp.set("http://www.w3.org/2001/XMLSchema", ontologyConstants.XSD.nam
 ontologyLookUp.set("", ontologyConstants.JENA.name)
 ontologyLookUp.set("http://www.w3.org/2002/07/owl", ontologyConstants.OWL.name)
 
-export default { ontologyConstants, ontologyLookUp }
+export default { ontologyConstants, ontologyLookUp, ontologyList }

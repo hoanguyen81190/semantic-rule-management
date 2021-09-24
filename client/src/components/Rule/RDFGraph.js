@@ -18,14 +18,22 @@ import { triplesToGraph, quadsToRDFModels } from '../../core/rdf_parser'
 
 import './RDFGraph.css'
 
-const NODE_RADIUS = 10
+const NODE_RADIUS = 30
+const RECT_WIDTH = 80
+const RECT_HEIGHT = 35
 
 
-function ontologyColor(ontology) {
-	var color = "black"
+function objColor(obj) {
+	var color = "white"
+	console.log("obj", obj)
 
-	if (ontology !== undefined) {
-		color = ONTOLOGY.ontologyConstants[ontology.toUpperCase()].color
+	if (obj.ontology !== undefined) {
+		if (obj.ontology === '') {
+			color = ONTOLOGY.ontologyConstants.BASE.color
+		}
+		else {
+			color = ONTOLOGY.ontologyConstants[obj.ontology.toUpperCase()].color
+		}
 	}
 	return color
 }
@@ -34,41 +42,53 @@ export default function RDFGraph(props) {
   const svgRef = React.useRef(null)
   const { rdfTriples, rdfGraph, rerender, isEditable } = props
   //const classes = useStyles()
-  const width = 600
-  const height = 300
-  const margin = { top: 30, right: 30, bottom: 30, left: 60 }
-  const svgWidth = width + margin.left + margin.right
-  const svgHeight = height + margin.top + margin.bottom
+  var width = 600
+  var height = 800
   const [displayedRule, setDisplayedRule] = React.useState(false)
 	const [openEditDialog, setOpenEditDialog] = React.useState(false)
 	const [editNode, setEditNode] = React.useState(null)
-
+	function handleZoom(e) {
+	  d3.select(svgRef.current)
+	    .attr('transform', e.transform)
+	}
   useEffect(() => {
-    console.log("EXCUSE ME", rdfTriples)
-    const svg = d3.select(svgRef.current)
+		// let zoom = d3.zoom()
+		// 							.scaleExtent([1, 5])
+		// 							.translateExtent([[0, 0], [width, height]])
+		// 							.on('zoom', handleZoom)
+    const svg = d3.select(svgRef.current)//.call(zoom)
     svg.selectAll("*").remove()
   	var force = d3.forceSimulation()
 		var graph = rdfGraph
 		if(graph === undefined) {
 			graph = triplesToGraph(rdfTriples)
-      console.log("EXCUSE ME IN", graph)
 		}
 
     update(svg, graph, force)
   }, [rdfTriples, rdfGraph, isEditable, rerender])
 
 	const update = (svg, graph, force) => {
-	  var width = 500
-	  var height = 500
-
 	  var simulation = d3.forceSimulation()
 	    .force("link", d3.forceLink().id(function(d) { return d.id }))
-	    .force("charge", d3.forceManyBody().strength(-100))
-	    .force("center", d3.forceCenter(width / 2, height / 2))
+	    .force("charge", d3.forceManyBody().strength(-500))
+	    .force("center", d3.forceCenter(width / 2, height / 3))
 
-		var marker = (color) => {
+		console.log("graph", graph)
 
-		}
+		// svg.append("defs").append("svg:clipPath")
+    //     .attr("id", "clip")
+    //     .append("svg:rect")
+    //     .attr("id", "clip-rect")
+    //     .attr("x", 0)
+    //               .attr("y", 0)
+    //               .attr("height", height)
+    //               .attr("width", width)
+		// var graphGroup = svg.append("g")
+    //         .attr("clip-path", "url(#clip)")//add the clip path
+    //               .attr("height", height)
+    //               .attr("width", width)
+    //               .attr("class", "graph-group")
+
 	  svg.append("defs").selectAll("node")
 				    .data(["end"])
 				    .enter().append("marker")
@@ -81,17 +101,28 @@ export default function RDFGraph(props) {
 				    .attr("orient", "auto")
 				    .append("polyline")
 						.attr("stroke", "black")
+						.style("stroke-width", 3)
 				    .attr("points", "0,-5 10,0 0,5")
 
 
-	  var link = svg.append("g")
+	  var first_link = svg.append("g")
 	                .selectAll("line")
-	                .data(graph.links)
+	                .data(graph.first_links)
 	                .enter().append("line")
 	                .attr("class", "link")
-									.style("stroke", function(d) { return ontologyColor(d.ontology) })
-	                .attr("marker-end", "url(#end)")
+									.style("stroke-width", 3)
+									.style("stroke", function(d) { return objColor(d.obj) })
+	                //.attr("marker-end", "url(#end)")
 
+		var second_link = svg.append("g")
+	                .selectAll("line")
+	                .data(graph.second_links)
+	                .enter().append("line")
+	                .attr("class", "link")
+									.style("stroke-width", 3)
+									.style("stroke", function(d) { return objColor(d.obj) })
+	                .attr("marker-end", "url(#end)")
+		//.call(d3.behavior.zoom().scaleExtent([1, 200]).on("zoom", zoom))
 	  var node = svg.append("g")
 	            .attr("class", "node")
 	            .selectAll("circle")
@@ -99,8 +130,8 @@ export default function RDFGraph(props) {
 	            .enter().append("circle")
 	            .attr("r", NODE_RADIUS)
 	            .attr('stroke', 'black')
-	            .attr('fill', '#69a3b2')
-							.style('stroke-dasharray', function(d) { return d.isEditable? "5,5" : ""})
+	            .attr('fill', function(d) { return objColor(d.obj) })
+							//.style('stroke-dasharray', function(d) { return d.isEditable? "5,5" : ""})
 	            .call(d3.drag()
 	              .on("start", dragstarted)
 	              .on("drag", dragged)
@@ -108,37 +139,60 @@ export default function RDFGraph(props) {
 
 	  var label = svg.append("g")
 	      .attr("class", "labels")
+				.attr("dy", ".3em")
+				.style("text-anchor", "middle")
 	      .selectAll("text")
 	      .data(graph.nodes)
+				.style("font-size", "10px")
+				.style("font-size", function(d) { return (2 * NODE_RADIUS - 10) / this.getComputedTextLength()*10 + 'px'})
 	      .enter().append("text")
 	        .attr("class", "label")
 	        .attr("font-size", "10px")
 	        .text(function(d) { return d.label })
 
+		var predicate = svg.append("g")
+	            .attr("class", "predicate")
+	            .selectAll("rect")
+	            .data(graph.predicates)
+	            .enter().append("rect")
+	            .attr('width', RECT_WIDTH)
+							.attr('height', RECT_HEIGHT)
+	            .attr('stroke', 'black')
+	            .attr('fill', function(d) { return objColor(d.obj) })
+	            .call(d3.drag()
+	              .on("start", dragstarted)
+	              .on("drag", dragged)
+	              .on("end", dragended))
+
 	  var linkLabel = svg.append("g")
 	                    .attr("class", "labels")
 	                    .selectAll("text")
-	                    .data(graph.links)
+	                    .data(graph.predicates)
 	                    .enter().append("text")
 	                      .attr("class", "label")
 	                      .attr("font-size", "10px")
-												.attr("stroke", function(d) { return ontologyColor(d.ontology) })
-	                      .text(function(d) { return d.predicate })
-
-
+												.style("text-anchor", "middle")
+	                      .text(function(d) { return d.label })
+		console.log("hello", graph.nodes.concat(graph.predicates))
 	  simulation
-	      .nodes(graph.nodes)
+	      .nodes(graph.nodes.concat(graph.predicates))
 	      .on("tick", ticked)
 
 	  simulation.force("link")
-	      .links(graph.links)
+	      .links(graph.first_links.concat(graph.second_links))
 
 	  function ticked() {
-	    link
+	    first_link
 	        .attr("x1", function(d) { return d.source.x })
 	        .attr("y1", function(d) { return d.source.y })
 	        .attr("x2", function(d) { return d.target.x })
 	        .attr("y2", function(d) { return d.target.y })
+
+			second_link
+					.attr("x1", function(d) { return d.source.x })
+					.attr("y1", function(d) { return d.source.y })
+					.attr("x2", function(d) { return d.target.x })
+					.attr("y2", function(d) { return d.target.y })
 
 	    node
 	         .attr("cx", function (d) { return d.x })
@@ -148,8 +202,11 @@ export default function RDFGraph(props) {
 	    		.attr("x", function(d) { return d.x })
 	        .attr("y", function (d) { return d.y })
 	    linkLabel
-	        .attr("x", function(d) { return (d.source.x + d.target.x)/2 })
-	        .attr("y", function(d) { return (d.source.y + d.target.y)/2 })
+	        .attr("x", function(d) { return (d.x) })
+	        .attr("y", function(d) { return (d.y) })
+			predicate
+					.attr("x", function(d) { return (d.x - RECT_WIDTH/2) })
+					.attr("y", function(d) { return (d.y - RECT_HEIGHT/2) })
 	    }
 
 	  function dragstarted(event, d) {
@@ -171,14 +228,12 @@ export default function RDFGraph(props) {
 	}
 
   return (
-    <div className="rdfGraphContainer">
-      <svg ref={svgRef} id="rdfGraphCanvas" className="rdfGraphCanvas" width={500} height={500}>
-        <g className="marker" />
-        <g className="node" />
-        <g className="link" />
-        <g className="link-text" />
-        <g className="node-text" />
-      </svg>
-    </div>
+    <svg ref={svgRef} id="rdfGraphCanvas" className="rdfGraphCanvas" width={500} height={500}>
+      <g className="marker" />
+      <g className="node" />
+      <g className="link" />
+      <g className="link-text" />
+      <g className="node-text" />
+    </svg>
   )
 }

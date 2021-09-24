@@ -31,7 +31,7 @@ const store = createStore ((state = initialState, action) => {
     }
 
     case 'ALL_ONTOLOGY_PROPERTIES': {
-      return { ...state, ontology_properties: action.ontology_properties}
+      return { ...state, ontology_properties: state.ontology_properties.concat(action.ontology_properties)}
     }
 
     default:

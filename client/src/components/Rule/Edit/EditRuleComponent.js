@@ -1,46 +1,70 @@
 import React, { useState, useEffect } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
+import Grid from '@material-ui/core/Grid'
+import Table from '@material-ui/core/Table'
+import TableBody from '@material-ui/core/TableBody'
+import TableCell from '@material-ui/core/TableCell'
+import TableContainer from '@material-ui/core/TableContainer'
+import TableHead from '@material-ui/core/TableHead'
+import TableRow from '@material-ui/core/TableRow'
+import Paper from '@material-ui/core/Paper'
+import Typography from '@material-ui/core/Typography'
+import TextField from '@material-ui/core/TextField'
 import IconButton from '@material-ui/core/IconButton'
 import AddIcon from '@material-ui/icons/Add'
 import ArrowRightAltIcon from '@material-ui/icons/ArrowRightAlt'
-import { Typography } from '@material-ui/core'
-import TextField from '@material-ui/core/TextField'
-import Grid from '@material-ui/core/Grid'
+import Button from '@material-ui/core/Button'
 
-import Card from '@material-ui/core/Card'
-import CardContent from '@material-ui/core/CardContent'
-
-import RDFGraph from '../../../components/Rule/RDFGraph'
 import { RDFTriple } from "../../../core/rdfModel"
 import Autocomplete from '@material-ui/lab/Autocomplete'
 
+import RDFGraph from '../RDFGraph'
 import ac_rest_manager from '../../../core/ac_rest_manager'
 import { constructQueryBuilder, selectQueryBuilder, common_queries } from '../../../core/comunica'
-import { convertToAutoCompleteRDF } from '../../../core/rdf_parser'
+import { convertToAutoCompleteRDF, parseObject } from '../../../core/rdf_parser'
 import store from '../../../core/store'
 import ONTOLOGY from "../../../core/ontologyConstants"
 import './EditFact.css'
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    '& > *': {
-      margin: theme.spacing(1),
-    },
+    //layout: 1,
+    height: "100%",
+    width: "100%"
   },
-  card: {
-    margin: "2%",
-    //minHeight: "50%"
+  list: {
+    height: "70vh",
+    width: "30%",
+    backgroundColor: theme.palette.background.paper,
+    overflowY: "scroll"
+  },
+  graph: {
+    height: "70vh",
+    width: "70%",
+  },
+  paper: {
+    padding: theme.spacing(1),
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
+  },
+  table: {
+
+  },
+  textField: {
+    margin: 10
+  },
+  editTriple: {
   },
   autoComplete: {
-    height: 140,
-    width: 200,
     fontSize: 10,
-  }
+  },
+  arrowButton: {
+  },
 }))
 
-export default function EditFact(props) {
-  const classes = useStyles()
+export default function EditRuleComponent(props) {
   const { callback } = props
+  const classes = useStyles()
 
   const inputSubjectRef = React.useRef(null)
   const inputPredicateRef = React.useRef(null)
@@ -49,7 +73,7 @@ export default function EditFact(props) {
   const [spacing, setSpacing] = React.useState(2)
   const [ edittingGraph, setEdittingGraph ] = React.useState({prefixes: [], triples: []})
   const [ disableEditPred, setDisableEditPred ] = React.useState(true)
-  const [ disableEditObj, setdisableEditObj ] = React.useState(true)
+  const [ disableEditObj, setDisableEditObj ] = React.useState(true)
   const [ variablesList, setVariablesList ] = React.useState([])
   const [ rerender, setRerender ] = React.useState(0)
 
@@ -159,7 +183,7 @@ export default function EditFact(props) {
 
       ac_rest_manager.sparqlQuery("select", query, (quads) => {
         objectSuggestionList = convertToAutoCompleteRDF(quads)
-        setdisableEditObj(false)
+        setDisableEditObj(false)
       })
       // }
     }
@@ -170,46 +194,42 @@ export default function EditFact(props) {
     var predicate = inputPredicateRef.current.value
     var object = inputObjectRef.current.value
     if(subject !== "" && predicate !== "" && object !== "") {
-      var sub = handleVariable(subject)
-      var predParts = predicate.split(':')
-      var obj = handleVariable(object)
-      var ontology = addToPrefixes(predParts[0])
+      var sub = parseObject(subject)
+      var pred = parseObject(predicate)
+      var obj = parseObject(object)
 
-      var newObject = new RDFTriple(sub, predParts[1], obj, ontology)
+      //handle
+      addToPrefixes(sub.ontology)
+      addToPrefixes(pred.ontology)
+      addToPrefixes(obj.ontology)
+
+      addToVariablesList(sub)
+      addToVariablesList(obj)
+
+      var newObject = new RDFTriple(sub, pred, obj)
       edittingGraph.triples.push(newObject)
       setEdittingGraph({...edittingGraph})
       setDisableEditPred(true)
-      setdisableEditObj(true)
+      setDisableEditObj(true)
       setRerender(rerender + 1)
     }
 
     //============SUPPORTING FUNCTIONS=============
     function addToPrefixes(p) {
-      if (edittingGraph.prefixes.indexOf(ONTOLOGY.ontologyConstants[p.toUpperCase()]) === -1) {
-        edittingGraph.prefixes.push(ONTOLOGY.ontologyConstants[p.toUpperCase()])
+      if (p !== undefined) {
+        if (edittingGraph.prefixes.indexOf(ONTOLOGY.ontologyConstants[p.toUpperCase()]) === -1) {
+          edittingGraph.prefixes.push(ONTOLOGY.ontologyConstants[p.toUpperCase()])
+        }
       }
-      return p
     }
 
     function addToVariablesList(v) {
-      if (variablesList.indexOf(v) === -1) {
-        variablesList.push(v)
+      if (v.isVar !== undefined && v.isVar) {
+        if (variablesList.indexOf(v) === -1) {
+          variablesList.push(v)
+        }
       }
     }
-
-    function handleVariable(input) {
-      var parts = input.split(':')
-
-      //add to Prefixes
-      if (parts.length > 1) {
-        addToPrefixes(parts[0])
-      }
-      else {
-        addToVariablesList(input)
-      }
-      return input
-    }
-
   }
 
   function getDisablePredicate() {
@@ -219,62 +239,113 @@ export default function EditFact(props) {
     return false
   }
 
+  const handleOKClick = (event, index) => {
+    callback(true)
+  }
+
+  const handleCancelClick = (event, iindex) => {
+    callback(false)
+  }
+
+  console.log("edit graph", edittingGraph)
+
   return (
-      <Card className={classes.card}>
-        <CardContent>
-          <Typography>
-          Fact
-          </Typography>
-          <Grid container className={classes.root} spacing={spacing}>
-            <Grid item>
-              <Autocomplete
-                freeSolo
-                id="ontology-suggestion-subject"
-                options={store.getState().ontology_classes.concat(variablesList)}
-                getOptionLabel={(c) => c.displayedName !== undefined? c.displayedName : c }
-                className={classes.autoComplete}
-                renderInput={(params) => <TextField required inputRef={inputSubjectRef}
-                                                    {...params} label="Variable" variant="outlined" />}
-              />
+    <div>
+    <Grid container className={classes.name} spacing={2} alignItems='center'>
+      <Grid item xs={4} className={classes.textField}>
+        <TextField id="standard-full-width" variant="outlined" fullWidth label="Name" />
+      </Grid>
+      <Grid item xs={4} className={classes.textField}>
+        <TextField id="standard-full-width" variant="outlined" fullWidth label="Function" />
+      </Grid>
+      <Grid item>
+        <Button variant="contained" onClick={handleOKClick}>
+          create
+        </Button>
+      </Grid>
+      <Grid item>
+        <Button variant="contained" onClick={handleCancelClick} >
+          Cancel
+        </Button>
+      </Grid>
+    </Grid>
+    <Grid container className={classes.root} spacing={2}>
+      <Grid key="list" className={classes.list} item>
+
+        <Table className={classes.table} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell>Subject</TableCell>
+              <TableCell>Predicate</TableCell>
+              <TableCell>Object</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {edittingGraph.triples.map((titem, tindex) => (
+              <TableRow key={tindex}>
+                <TableCell component="th" scope="row">
+                  {titem.subject.value}
+                </TableCell>
+                <TableCell>{titem.predicate.value}</TableCell>
+                <TableCell>{titem.object.value}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </Grid>
+      <Grid key="graph" className={classes.graph} item >
+        <Grid container alignItems='center' className={classes.editTriple} spacing={0}>
+          <Grid item xs={3} className={classes.autoComplete}>
+            <Autocomplete
+              freeSolo
+              id="ontology-suggestion-subject"
+              options={store.getState().ontology_classes.concat(variablesList)}
+              getOptionLabel={(c) => c.displayedName !== undefined? c.displayedName : c }
+              renderInput={(params) => <TextField required inputRef={inputSubjectRef}
+                                                  {...params} label="Variable" variant="outlined" />}
+            />
             </Grid>
-            <IconButton onClick={handleAddPredicate}>
-              <ArrowRightAltIcon />
-            </IconButton >
-            <Grid item>
+            <Grid item className={classes.arrowButton}>
+              <IconButton onClick={handleAddPredicate}>
+                <ArrowRightAltIcon />
+              </IconButton >
+            </Grid>
+            <Grid item xs={3} className={classes.autoComplete}>
               <Autocomplete
                 disabled={disableEditPred}
                 id="ontology-suggestion-predicate"
                 options={store.getState().ontology_properties}
                 getOptionLabel={(c) => c.displayedName}
-                className={classes.autoComplete}
-                onChange={(e, v) => setdisableEditObj(true)}
+                onChange={(e, v) => setDisableEditObj(true)}
                 renderInput={(params) => <TextField required inputRef={inputPredicateRef}
                                                     {...params} label="Predicate" variant="outlined" />}
               />
             </Grid>
-            <IconButton onClick={handleAddObject} disabled={disableEditPred}>
-              <ArrowRightAltIcon />
-            </IconButton >
-            <Grid item>
+            <Grid item className={classes.arrowButton}>
+              <IconButton onClick={handleAddObject} disabled={disableEditPred}>
+                <ArrowRightAltIcon />
+              </IconButton >
+            </Grid>
+            <Grid item xs={3} className={classes.autoComplete}>
               <Autocomplete
                 freeSolo
                 disabled={disableEditObj}
                 id="ontology-suggestion-object"
                 options={store.getState().ontology_classes}
                 getOptionLabel={(c) => c.displayedName !== undefined? c.displayedName : c}
-                className={classes.autoComplete}
                 renderInput={(params) => <TextField required inputRef={inputObjectRef}
                                                     {...params} label="Object" variant="outlined" />}
               />
             </Grid>
-            <Grid item>
+            <Grid item className={classes.arrowButton}>
               <IconButton onClick={handleAddNewTriple}>
                 <AddIcon />
               </IconButton >
-              </Grid>
+            </Grid>
           </Grid>
-          <RDFGraph rdfTriples={edittingGraph.triples} rerender={rerender} isEditable={true}/>
-        </CardContent>
-      </Card>
-  );
+        <RDFGraph rdfTriples={edittingGraph.triples} rerender={rerender} isEditable={false}/>
+      </Grid>
+    </Grid>
+    </div>
+  )
 }

@@ -89,15 +89,44 @@ function parseStatement(statementString) {
 
 }
 
+export function parseObject(objStr) {
+  var ontologyParts = objStr.split(':')
+  if (ontologyParts.length > 1) {//belongs to an ontology
+    return {
+      value: ontologyParts[1],
+      ontology: ontologyParts[0]
+    }
+  }
+  else { //either variable or a literal
+    var variableParts = objStr.split('?')
+    if (variableParts.length > 1) { //is a variable
+      return {
+        value: variableParts[1],
+        isVar: true
+      }
+    }
+    return {
+      value: objStr,
+      isVar: false
+    }
+  }
+}
+
 function parseRDFTriples(inputString) {
   var rdfString = inputString.trim()
   //Check if it is an RDFTriple
   var rdfNormal = rdfString.indexOf('(')
 
   if (rdfNormal > 0) {
-    var comma = rdfString.indexOf(',')
-    var func = rdfString.substr(0, rdfNormal)
-    return new RDFTriple(rdfString.substr(rdfNormal + 1, comma - rdfNormal - 1), rdfString.substr(0, rdfNormal), rdfString.substr(comma + 1), JENA_ONTOLOGY)
+    let comma = rdfString.indexOf(',')
+    let func = rdfString.substr(0, rdfNormal)
+    let predicate = {
+      value: rdfString.substr(0, rdfNormal),
+      ontology: JENA_ONTOLOGY
+    }
+    return new RDFTriple(parseObject(rdfString.substr(rdfNormal + 1, comma - rdfNormal - 1)),
+                         predicate,
+                         parseObject(rdfString.substr(comma + 1)))
   }
   else if (rdfNormal !== -1) {
     const parts = rdfString.substr(rdfNormal+1).split(/\s+/)
@@ -105,8 +134,13 @@ function parseRDFTriples(inputString) {
     if (ontology === '') {
       ontology = DEFAULT_ONTOLOGY
     }
-
-    return new RDFTriple(parts[0], parts[1].split(':')[1], parts[2], ontology)
+    let predicate = {
+      value: parts[1].split(':')[1],
+      ontology: ontology
+    }
+    return new RDFTriple(parseObject(parts[0]),
+                         predicate,
+                         parseObject(parts[2]))
   }
 
 }
@@ -148,19 +182,18 @@ export function jenaRuleParser(stringInput) {
 }
 
 //-------------------------GRAPH--------------------------
-function parseURLName(urlName) {
-  var parts = urlName.split('#')
+function parseURLName(urlObj) {
+  var parts = urlObj.value.split('#')
 
   return {
-    name: parts[1],
+    value: parts[1],
     ontology: ONTOLOGY.ontologyLookUp.get(parts[0])
   }
 }
 function quadToRDFModel(quad) {
-  return new RDFTriple(parseURLName(quad.subject.value).name,
-                       parseURLName(quad.predicate.value).name,
-                       parseURLName(quad.object.value).name,
-                       parseURLName(quad.predicate.value).ontology,
+  return new RDFTriple(parseURLName(quad.subject),
+                       parseURLName(quad.predicate),
+                       parseURLName(quad.object)
                         )
 }
 
@@ -182,9 +215,8 @@ function filterNodesByType(nodes,value){
 
 export function triplesToGraph(inputTriples){
 	//Graph
-	var graph={nodes:[], links:[]}
+	var graph={nodes:[], first_links:[], second_links:[], predicates:[]}
 	if (inputTriples === undefined || inputTriples.length === 0) {
-			console.log("output graph?", graph)
 		return graph
 	}
 
@@ -204,18 +236,33 @@ export function triplesToGraph(inputTriples){
 		var objNode  = filterNodesById(graph.nodes, objId)[0]
 
 		if(subjNode==null){
-			subjNode = {id:subjId, label:subjId, weight:1,isEditable:false}
+			subjNode = {id:subjId, label:subjId, weight:1, obj:triple.subject}
 			graph.nodes.push(subjNode)
 		}
 
 		if(objNode==null){
-			objNode = {id:objId, label:objId, weight:1,isEditable:false}
+			objNode = {id:objId, label:objId, weight:1, obj:triple.object}
 			graph.nodes.push(objNode)
 		}
+    var predNode = {id:subjId+predId+objId, label:predId, obj:triple.predicate, weight:1}
+    graph.predicates.push(predNode)
 
+		graph.first_links.push({source:subjNode, target:predNode, obj:triple.predicate, weight:1})
+    graph.second_links.push({source:predNode, target:objNode, obj:triple.predicate, weight:1})
+	})
 
-		graph.links.push({source:subjNode, target:objNode, predicate:predId, weight:1, ontology: triple.ontology});
-	});
-	console.log("output graph", graph)
-	return graph;
+	return graph
+}
+
+export function convertToAutoCompleteRDF(quads) {
+  var results = []
+  quads.map((qitem, qindex) => {
+    var parts = qitem['?s'].value.split('#')
+    results.push({
+      name: parts[1],
+      ontology: ONTOLOGY.ontologyLookUp.get(parts[0]),
+      displayedName: ONTOLOGY.ontologyLookUp.get(parts[0]) + ':' + parts[1]
+    })
+  })
+  return results
 }
