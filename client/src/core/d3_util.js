@@ -12,15 +12,17 @@ const RECT_HEIGHT = 35
 
 function objColor(obj) {
 	var color = "white"
-	console.log("obj", obj)
 
 	if (obj.ontology !== undefined) {
 		if (obj.ontology === '') {
-			color = ONTOLOGY.ontologyConstants.BASE.color
+			color = ONTOLOGY.ontologyConstants.AUTO.colorCode
 		}
 		else {
-			color = ONTOLOGY.ontologyConstants[obj.ontology.toUpperCase()].color
+			color = ONTOLOGY.ontologyConstants[obj.ontology.toUpperCase()].colorCode
 		}
+	}
+	else if (!obj.isVar) {
+		color = "gray"
 	}
 	return color
 }

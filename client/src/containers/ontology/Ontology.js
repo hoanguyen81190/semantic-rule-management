@@ -21,15 +21,14 @@ import withStyles from '@material-ui/core/styles/withStyles'
 import TestComponent from '../../components/Test/TestComponent'
 
 import NestedList from '../../components/List/NestedList'
-import RuleCard from '../../components/Rule/RuleCard'
 
 import RDFGraph from '../../components/Rule/RDFGraph'
 
 import store from '../../core/store'
 import ac_rest_manager from '../../core/ac_rest_manager.js'
 
-import sosaTurtle from './sosa.ttl'
-import saiOWL from './SAI.owl'
+//import sosaTurtle from './sosa.ttl'
+import saiOWL from './AutoIoT.ttl'
 import { jenaRuleParser, turtleParser } from '../../core/rdf_parser'
 import { selectQueryBuilder, constructQueryBuilder } from '../../core/comunica'
 import ontologyConstants from '../../core/ontologyConstants'
@@ -56,25 +55,21 @@ const Ontology = (props) => {
     const query1 = constructQueryBuilder([], null, [['?s', '?p', '?o']], 100)
 
     ac_rest_manager.sparqlQuery("construct", query1, (data) => {
-      console.log("COMUNICA", data)
       setRdfTriples(data)
     })
     fetch(saiOWL)
       .then(r => r.text())
       .then(text => {
         var turtleQuads = turtleParser(text)
-        console.log("QUADS", turtleQuads)
         //setRdfTriples(turtleQuads)
       })
   }, [])
 
 
   const handleListItemClick = (event, iindex) => {
-    console.log("handle click", open[iindex])
     // setOpen(!open)
     if (open[iindex] === undefined) {
       setOpen({...open, [iindex]: true})
-      console.log("open", open)
     }
     else {
       setOpen({...open, [iindex]: !open[iindex]})

@@ -22,7 +22,6 @@ import withStyles from '@material-ui/core/styles/withStyles'
 import TestComponent from '../../components/Test/TestComponent'
 
 import NestedList from '../../components/List/NestedList'
-import RuleCard from '../../components/Rule/RuleCard'
 import Prefixes from '../../components/Rule/Prefixes'
 import RuleComponent from '../../components/Rule/RuleComponent'
 import EditRuleComponent from '../../components/Rule/Edit/EditRuleComponent'
@@ -32,7 +31,7 @@ import ac_rest_manager from '../../core/ac_rest_manager.js'
 
 import jenaRuleExample from './TestConsumer.rule'
 import sosaTurtle from './sosa.ttl'
-import { jenaRuleParser, turtleParser } from '../../core/rdf_parser'
+import { jenaRuleParser, turtleParser, getRuleResponseParser } from '../../core/rdf_parser'
 
 const useStyles = makeStyles((theme) => ({
 
@@ -62,16 +61,16 @@ const Rules = (props) => {
          setPrefixes(parseResult.prefixes)
          setJenaRules(parseResult.rules)
       })
-
-    // const query = `
-    //   PREFIX owl: <http://www.w3.org/2002/07/owl#>
-    //   PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    // ac_rest_manager.getAllRules((data) => {
+    //   if (data) {
+    //     //console.log("GET ALL RULES", data)
+    //     console.log("GET ALL RULES", data)
+    //     var output = getRuleResponseParser(data)
+    //     console.log("output", output)
+    //     setJenaRules(getRuleResponseParser(data))
+    //   }
     //
-    //   SELECT ?s WHERE {
-    //     ?s rdf:type owl:ObjectProperty.
-    //   } LIMIT 10
-    //   `
-    // sparqlQuery(query)
+    // })
   }, [])
 
   // useEffect(() => {
@@ -85,7 +84,7 @@ const Rules = (props) => {
 
 
   const editRuleCallback = (close) => {
-    console.log("reason", close)
+    //console.log("reason", close)
     setIsAdding(false)
   }
 
@@ -99,13 +98,14 @@ const Rules = (props) => {
 
     }
 
-    setSelectedIndex(iindex)
+    //console.log("SELECTED INDEX", iindex)
+    setSelectedIndex(iindex - 1)
   }
 
   const handleAddRuleClick = () => {
     //collapse all Rules
     setIsAdding(true)
-    console.info('you want to add', open)
+    //console.info('you want to add', open)
   }
 
   var rules = <List>
@@ -134,7 +134,7 @@ const Rules = (props) => {
               <LibraryBooksIcon />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary={sitem.name + ': ' + sitem.statement.head} />
+          <ListItemText primary={sitem.systemName + ': ' + sitem.name} />
           {open[sindex + 1] ? <ExpandLess /> : <ExpandMore />}
           <ListItemSecondaryAction>
             <IconButton edge="end" aria-label="delete">

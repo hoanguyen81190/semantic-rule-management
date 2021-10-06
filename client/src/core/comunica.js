@@ -12,7 +12,7 @@ function buildConditionString(conditions) {
 }
 
 export const common_queries = {
-  get_all_classes: selectQueryBuilder([ONTOLOGY.ontologyConstants.OWL], ['?s'], [['?s', '?p', 'owl:Class']], 1000),
+  get_all_classes: selectQueryBuilder([ONTOLOGY.ontologyConstants.AUTO], ['?s'], [['?s', '?p', 'owl:Class']], 1000),
   get_all_properties: selectQueryBuilder([ONTOLOGY.ontologyConstants.RDF], ['?s'], [['?s', '?p', 'rdf:Property']], 1000)
 }
 

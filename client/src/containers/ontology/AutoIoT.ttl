@@ -1,0 +1,1037 @@
+@prefix : <http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#> .
+@prefix DUL: <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#> .
+@prefix MSM: <http://iserve.kmi.open.ac.uk/ns/msm#> .
+@prefix SAN: <http://www.irit.fr/recherches/MELODI/ontologies/SAN#> .
+@prefix SSN: <http://purl.oclc.org/NET/ssnx/ssn#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix IOTO: <http://www.irit.fr/recherches/MELODI/ontologies/IoT-O#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix DOGONT: <http://elite.polito.it/ontologies/dogont.owl#> .
+@base <http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT> .
+
+<http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT> rdf:type owl:Ontology ;
+                                                                owl:imports <http://www.irit.fr/recherches/MELODI/ontologies/IoT-O> .
+
+#################################################################
+#    Object Properties
+#################################################################
+
+###  http://elite.polito.it/ontologies/dogont.owl#hasState
+DOGONT:hasState rdf:type owl:ObjectProperty .
+
+
+###  http://iserve.kmi.open.ac.uk/ns/msm#hasOperation
+MSM:hasOperation rdf:type owl:ObjectProperty .
+
+
+###  http://purl.oclc.org/NET/ssnx/ssn#forProperty
+SSN:forProperty rdf:type owl:ObjectProperty .
+
+
+###  http://purl.oclc.org/NET/ssnx/ssn#hasProperty
+SSN:hasProperty rdf:type owl:ObjectProperty .
+
+
+###  http://purl.oclc.org/NET/ssnx/ssn#hasValue
+SSN:hasValue rdf:type owl:ObjectProperty .
+
+
+###  http://www.irit.fr/recherches/MELODI/ontologies/IoT-O#hasService
+IOTO:hasService rdf:type owl:ObjectProperty .
+
+
+###  http://www.irit.fr/recherches/MELODI/ontologies/SAN#actsOn
+SAN:actsOn rdf:type owl:ObjectProperty .
+
+
+###  http://www.irit.fr/recherches/MELODI/ontologies/SAN#hasActuatingCapability
+SAN:hasActuatingCapability rdf:type owl:ObjectProperty .
+
+
+###  http://www.irit.fr/recherches/MELODI/ontologies/SAN#hasActuatingProperty
+SAN:hasActuatingProperty rdf:type owl:ObjectProperty .
+
+
+###  http://www.irit.fr/recherches/MELODI/ontologies/SAN#isConsumedBy
+SAN:isConsumedBy rdf:type owl:ObjectProperty .
+
+
+###  http://www.irit.fr/recherches/MELODI/ontologies/SSN_custom#forProperty
+<http://www.irit.fr/recherches/MELODI/ontologies/SSN_custom#forProperty> rdf:type owl:ObjectProperty .
+
+
+###  http://www.irit.fr/recherches/MELODI/ontologies/SSN_custom#hasValue
+<http://www.irit.fr/recherches/MELODI/ontologies/SSN_custom#hasValue> rdf:type owl:ObjectProperty .
+
+
+###  http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasLocation
+DUL:hasLocation rdf:type owl:ObjectProperty .
+
+
+###  http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasRegion
+DUL:hasRegion rdf:type owl:ObjectProperty .
+
+
+###  http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#NeedAdaptingTo
+:NeedAdaptingTo rdf:type owl:ObjectProperty .
+
+
+###  http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#ServiceDisrupted
+:ServiceDisrupted rdf:type owl:ObjectProperty .
+
+
+###  http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#SubstitutionFrom
+:SubstitutionFrom rdf:type owl:ObjectProperty ;
+                  rdfs:subPropertyOf owl:topObjectProperty .
+
+
+###  http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#SubstitutionTo
+:SubstitutionTo rdf:type owl:ObjectProperty ;
+                rdfs:subPropertyOf owl:topObjectProperty .
+
+
+###  http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#UpgradeFrom
+:UpgradeFrom rdf:type owl:ObjectProperty .
+
+
+###  http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#UpgradeTo
+:UpgradeTo rdf:type owl:ObjectProperty .
+
+
+###  http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#hasContext
+:hasContext rdf:type owl:ObjectProperty .
+
+
+###  http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#hasHigherResolution
+:hasHigherResolution rdf:type owl:ObjectProperty .
+
+
+###  http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#hasSensingCapability
+:hasSensingCapability rdf:type owl:ObjectProperty ;
+                      rdfs:subPropertyOf SSN:hasProperty .
+
+
+###  http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#hasSensingProperty
+:hasSensingProperty rdf:type owl:ObjectProperty ;
+                    rdfs:subPropertyOf SSN:hasProperty .
+
+
+###  http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#hasServiceUsage
+:hasServiceUsage rdf:type owl:ObjectProperty .
+
+
+###  http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#observes
+:observes rdf:type owl:ObjectProperty .
+
+
+###  http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#usedInContext
+:usedInContext rdf:type owl:ObjectProperty .
+
+
+###  http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#usesService
+:usesService rdf:type owl:ObjectProperty .
+
+
+#################################################################
+#    Data properties
+#################################################################
+
+###  http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasDataValue
+DUL:hasDataValue rdf:type owl:DatatypeProperty .
+
+
+###  http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#hasId
+:hasId rdf:type owl:DatatypeProperty ;
+       rdfs:subPropertyOf owl:topDataProperty ;
+       rdf:type owl:FunctionalProperty .
+
+
+###  http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#hasMaxValue
+:hasMaxValue rdf:type owl:DatatypeProperty ;
+             rdfs:subPropertyOf owl:topDataProperty ;
+             rdfs:domain DUL:Region ;
+             rdfs:range xsd:integer .
+
+
+###  http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#hasMinValue
+:hasMinValue rdf:type owl:DatatypeProperty ;
+             rdfs:subPropertyOf owl:topDataProperty ;
+             rdfs:domain DUL:Region ;
+             rdfs:range xsd:integer .
+
+
+#################################################################
+#    Classes
+#################################################################
+
+###  http://elite.polito.it/ontologies/dogont.owl#Actuator
+DOGONT:Actuator rdf:type owl:Class .
+
+
+###  http://elite.polito.it/ontologies/dogont.owl#LivingRoom
+DOGONT:LivingRoom rdf:type owl:Class .
+
+
+###  http://elite.polito.it/ontologies/dogont.owl#State
+DOGONT:State rdf:type owl:Class .
+
+
+###  http://iserve.kmi.open.ac.uk/ns/msm#Operation
+MSM:Operation rdf:type owl:Class .
+
+
+###  http://iserve.kmi.open.ac.uk/ns/msm#Service
+MSM:Service rdf:type owl:Class ;
+            rdfs:subClassOf [ rdf:type owl:Restriction ;
+                              owl:onProperty :usedInContext ;
+                              owl:someValuesFrom :Context
+                            ] .
+
+
+###  http://purl.oclc.org/NET/ssnx/ssn#Property
+SSN:Property rdf:type owl:Class .
+
+
+###  http://qudt.org/schema/qudt#QuantityKind
+<http://qudt.org/schema/qudt#QuantityKind> rdf:type owl:Class .
+
+
+###  http://www.irit.fr/recherches/MELODI/ontologies/IoT-O#Sensing_device
+IOTO:Sensing_device rdf:type owl:Class .
+
+
+###  http://www.irit.fr/recherches/MELODI/ontologies/SAN#ActuatingCapability
+SAN:ActuatingCapability rdf:type owl:Class .
+
+
+###  http://www.irit.fr/recherches/MELODI/ontologies/SAN#ActuatingRange
+SAN:ActuatingRange rdf:type owl:Class ;
+                   rdfs:subClassOf [ rdf:type owl:Restriction ;
+                                     owl:onProperty :hasHigherResolution ;
+                                     owl:someValuesFrom SAN:ActuatingRange
+                                   ] .
+
+
+###  http://www.irit.fr/recherches/MELODI/ontologies/SAN#ActuationValue
+SAN:ActuationValue rdf:type owl:Class .
+
+
+###  http://www.irit.fr/recherches/MELODI/ontologies/SAN#Actuator
+SAN:Actuator rdf:type owl:Class ;
+             rdfs:subClassOf [ rdf:type owl:Restriction ;
+                               owl:onProperty :hasHigherResolution ;
+                               owl:someValuesFrom SAN:Actuator
+                             ] ,
+                             [ rdf:type owl:Restriction ;
+                               owl:onProperty :hasSensingCapability ;
+                               owl:someValuesFrom :SensingCapability
+                             ] .
+
+
+###  http://www.irit.fr/recherches/MELODI/ontologies/SAN#ActuatorInput
+SAN:ActuatorInput rdf:type owl:Class .
+
+
+###  http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Amount
+DUL:Amount rdf:type owl:Class ;
+           rdfs:subClassOf [ rdf:type owl:Restriction ;
+                             owl:onProperty SSN:hasValue ;
+                             owl:someValuesFrom DUL:Amount
+                           ] .
+
+
+###  http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Entity
+DUL:Entity rdf:type owl:Class .
+
+
+###  http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Region
+DUL:Region rdf:type owl:Class ;
+           rdfs:subClassOf [ rdf:type owl:Restriction ;
+                             owl:onProperty :hasHigherResolution ;
+                             owl:someValuesFrom DUL:Region
+                           ] .
+
+
+###  http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#Adaptation
+:Adaptation rdf:type owl:Class ;
+            rdfs:subClassOf :Application .
+
+
+###  http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#Application
+:Application rdf:type owl:Class ;
+             rdfs:subClassOf DUL:Entity ,
+                             [ rdf:type owl:Restriction ;
+                               owl:onProperty :hasServiceUsage ;
+                               owl:someValuesFrom :ServiceUsage
+                             ] .
+
+
+###  http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#Context
+:Context rdf:type owl:Class ;
+         rdfs:subClassOf DUL:Entity .
+
+
+###  http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#SensingCapability
+:SensingCapability rdf:type owl:Class ;
+                   rdfs:subClassOf SSN:Property ,
+                                   [ rdf:type owl:Restriction ;
+                                     owl:onProperty SSN:forProperty ;
+                                     owl:someValuesFrom <http://qudt.org/schema/qudt#QuantityKind>
+                                   ] ,
+                                   [ rdf:type owl:Restriction ;
+                                     owl:onProperty :hasSensingProperty ;
+                                     owl:someValuesFrom :SensingProperty
+                                   ] .
+
+
+###  http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#SensingProperty
+:SensingProperty rdf:type owl:Class ;
+                 rdfs:subClassOf SSN:Property ,
+                                 [ rdf:type owl:Restriction ;
+                                   owl:onProperty <http://www.irit.fr/recherches/MELODI/ontologies/SSN_custom#hasValue> ;
+                                   owl:someValuesFrom DUL:Amount
+                                 ] .
+
+
+###  http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#SensingRange
+:SensingRange rdf:type owl:Class ;
+              rdfs:subClassOf :SensingProperty .
+
+
+###  http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#SensingTime
+:SensingTime rdf:type owl:Class ;
+             rdfs:subClassOf :SensingProperty .
+
+
+###  http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#ServiceDisruption
+:ServiceDisruption rdf:type owl:Class ;
+                   rdfs:subClassOf :Adaptation .
+
+
+###  http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#ServiceSubstitution
+:ServiceSubstitution rdf:type owl:Class ;
+                     rdfs:subClassOf :Adaptation .
+
+
+###  http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#ServiceUpgrade
+:ServiceUpgrade rdf:type owl:Class ;
+                rdfs:subClassOf :Adaptation .
+
+
+###  http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#ServiceUsage
+:ServiceUsage rdf:type owl:Class ;
+              rdfs:subClassOf DUL:Entity ,
+                              [ rdf:type owl:Restriction ;
+                                owl:onProperty :ServiceDisrupted ;
+                                owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                                owl:onClass MSM:Service
+                              ] ,
+                              [ rdf:type owl:Restriction ;
+                                owl:onProperty :SubstitutionTo ;
+                                owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                                owl:onClass MSM:Service
+                              ] ,
+                              [ rdf:type owl:Restriction ;
+                                owl:onProperty :UpgradeTo ;
+                                owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                                owl:onClass MSM:Service
+                              ] ,
+                              [ rdf:type owl:Restriction ;
+                                owl:onProperty :hasContext ;
+                                owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                                owl:onClass :Context
+                              ] ,
+                              [ rdf:type owl:Restriction ;
+                                owl:onProperty :usesService ;
+                                owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                                owl:onClass MSM:Service
+                              ] .
+
+
+###  http://www.w3.org/2002/07/owl#Thing
+owl:Thing owl:hasKey ( :hasId
+                     ) .
+
+
+###  http://www.wsmo.org/ns/hrests#URITemplate
+<http://www.wsmo.org/ns/hrests#URITemplate> rdf:type owl:Class .
+
+
+#################################################################
+#    Individuals
+#################################################################
+
+###  http://purl.oclc.org/NET/muo/ucum/physical-quality/luminous-intensity
+<http://purl.oclc.org/NET/muo/ucum/physical-quality/luminous-intensity> rdf:type owl:NamedIndividual .
+
+
+###  http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#DimingActuatorValue
+:DimingActuatorValue rdf:type owl:NamedIndividual ,
+                              SAN:ActuationValue ;
+                     DUL:hasDataValue 25 ;
+                     :hasId "DimmingActuatorValue1"^^xsd:string .
+
+
+###  http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#DimmingActuatorInput
+:DimmingActuatorInput rdf:type owl:NamedIndividual ,
+                               SAN:ActuatorInput ;
+                      SAN:isConsumedBy :LampActuator ;
+                      <http://www.irit.fr/recherches/MELODI/ontologies/SSN_custom#hasValue> :DimingActuatorValue ;
+                      :hasId "DimmingActuatorInput1"^^xsd:string .
+
+
+###  http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#DimmingOperation
+:DimmingOperation rdf:type owl:NamedIndividual ,
+                           MSM:Operation ;
+                  <http://www.wsmo.org/ns/hrests#hasAddress> :DimmingOperationURL ;
+                  :hasId "DimmingOperation1"^^xsd:string .
+
+
+###  http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#DimmingOperationURL
+:DimmingOperationURL rdf:type owl:NamedIndividual ,
+                              <http://www.wsmo.org/ns/hrests#URITemplate> ;
+                     :hasId "DimmingOperationURL1"^^xsd:string ;
+                     <http://www.wsmo.org/ns/hrests#hasAddress> "http://192.168.1.10/LampActuator/Create/[value]"^^xsd:string .
+
+
+###  http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#DimmingSerivce
+:DimmingSerivce rdf:type owl:NamedIndividual ,
+                         MSM:Service ;
+                MSM:hasOperation :DimmingOperation ;
+                :usedInContext :LightingContext ,
+                               :NotificationContext ;
+                :hasId "DimmingService1"^^xsd:string .
+
+
+###  http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#FireAlarmApp
+:FireAlarmApp rdf:type owl:NamedIndividual ,
+                       :Application ;
+              :hasServiceUsage :LightSensorUsage_1 ;
+              :hasId "Application_3"^^xsd:string .
+
+
+###  http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#LampActuator
+:LampActuator rdf:type owl:NamedIndividual ,
+                       SAN:Actuator ;
+              DOGONT:hasState :OnlineState ;
+              IOTO:hasService :DimmingSerivce ;
+              SAN:actsOn :LuminousIntensity ;
+              SAN:hasActuatingCapability :LightningCapability ;
+              DUL:hasLocation :Room1 ;
+              :hasId "LampActuator1"^^xsd:string .
+
+
+###  http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#LampActuatorUsage_1
+:LampActuatorUsage_1 rdf:type owl:NamedIndividual ,
+                              :ServiceUsage ;
+                     :hasContext :LightingContext ;
+                     :usesService :DimmingSerivce ;
+                     :hasId "ServiceUsage_2"^^xsd:string .
+
+
+###  http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#LampRegulatingApp
+:LampRegulatingApp rdf:type owl:NamedIndividual ,
+                            :Application ;
+                   :hasServiceUsage :LampActuatorUsage_1 ;
+                   :hasId "Application_1"^^xsd:string .
+
+
+###  http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#LightSensingService_1
+:LightSensingService_1 rdf:type owl:NamedIndividual ,
+                                MSM:Service ;
+                       :usedInContext :LightingContext ;
+                       :hasId "LightSensingService_1"^^xsd:string .
+
+
+###  http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#LightSensor
+:LightSensor rdf:type owl:NamedIndividual ,
+                      IOTO:Sensing_device ;
+             DOGONT:hasState :OnlineState ;
+             IOTO:hasService :LightSensingService_1 ;
+             DUL:hasLocation :Room1 ;
+             :hasSensingCapability :SensingCapability ;
+             :observes :LuminousIntensity ;
+             :hasId "LightSensor_1"^^xsd:string .
+
+
+###  http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#LightSensorUsage_1
+:LightSensorUsage_1 rdf:type owl:NamedIndividual ,
+                             :ServiceUsage ;
+                    :hasContext :NotificationContext ;
+                    :usesService :LightSensingService_1 ;
+                    :hasId "ServiceUsage_1"^^xsd:string .
+
+
+###  http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#LightingContext
+:LightingContext rdf:type owl:NamedIndividual ,
+                          :Context ;
+                 :hasId "LightingContext"^^xsd:string .
+
+
+###  http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#LightningCapability
+:LightningCapability rdf:type owl:NamedIndividual ,
+                              SAN:ActuatingCapability ;
+                     SSN:forProperty :LuminousIntensity ;
+                     SAN:hasActuatingProperty :PowerRange ;
+                     :hasId "LightningCapability1"^^xsd:string .
+
+
+###  http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#LuminousIntensity
+:LuminousIntensity rdf:type owl:NamedIndividual ,
+                            SSN:Property ;
+                   :hasId "LuminousIntensity"^^xsd:string .
+
+
+###  http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#NotificationContext
+:NotificationContext rdf:type owl:NamedIndividual ,
+                              :Context ;
+                     :hasId "NotificationContext"^^xsd:string .
+
+
+###  http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#OfflineState
+:OfflineState rdf:type owl:NamedIndividual ,
+                       DOGONT:State ;
+              :hasId "State_0"^^xsd:string .
+
+
+###  http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#OnlineState
+:OnlineState rdf:type owl:NamedIndividual ,
+                      DOGONT:State ;
+             :hasId "State_1"^^xsd:string .
+
+
+###  http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#PowerRange
+:PowerRange rdf:type owl:NamedIndividual ,
+                     SAN:ActuatingRange ;
+            DUL:hasRegion :PowerRegion ;
+            :hasId "PowerRange1" .
+
+
+###  http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#PowerRegion
+:PowerRegion rdf:type owl:NamedIndividual ,
+                      DUL:Region ;
+             :hasId "PowerRegion1" ;
+             :hasMaxValue 50 ;
+             :hasMinValue 0 .
+
+
+###  http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#Room1
+:Room1 rdf:type owl:NamedIndividual ,
+                DOGONT:LivingRoom ;
+       :hasId "Room1"^^xsd:string .
+
+
+###  http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#SensingCapability
+:SensingCapability rdf:type owl:NamedIndividual ,
+                            :SensingCapability ;
+                   :hasSensingProperty :SensingRange ;
+                   :hasId "SensingCapability_1"^^xsd:string .
+
+
+###  http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#SensingRange
+:SensingRange rdf:type owl:NamedIndividual ,
+                       :SensingRange ;
+              DUL:hasRegion :SensingRegion ;
+              :hasId "SensingRange_1"^^xsd:string .
+
+
+###  http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#SensingRegion
+:SensingRegion rdf:type owl:NamedIndividual ,
+                        DUL:Region ;
+               :hasId "SensingRegion_1"^^xsd:string ;
+               :hasMaxValue 50 ;
+               :hasMinValue 0 .
+
+
+###  http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#ThermostatApp
+:ThermostatApp rdf:type owl:NamedIndividual ,
+                        :Application ;
+               :hasId "Application_2"^^xsd:string .
+
+
+#################################################################
+#    Rules
+#################################################################
+
+<urn:swrl#usage> rdf:type <http://www.w3.org/2003/11/swrl#Variable> .
+
+<urn:swrl#ser> rdf:type <http://www.w3.org/2003/11/swrl#Variable> .
+
+<urn:swrl#app> rdf:type <http://www.w3.org/2003/11/swrl#Variable> .
+
+<urn:swrl#state> rdf:type <http://www.w3.org/2003/11/swrl#Variable> .
+
+<urn:swrl#dev> rdf:type <http://www.w3.org/2003/11/swrl#Variable> .
+
+<urn:swrl#ser1> rdf:type <http://www.w3.org/2003/11/swrl#Variable> .
+
+<urn:swrl#device1> rdf:type <http://www.w3.org/2003/11/swrl#Variable> .
+
+<urn:swrl#loc> rdf:type <http://www.w3.org/2003/11/swrl#Variable> .
+
+<urn:swrl#device2> rdf:type <http://www.w3.org/2003/11/swrl#Variable> .
+
+<urn:swrl#ser2> rdf:type <http://www.w3.org/2003/11/swrl#Variable> .
+
+<urn:swrl#cap1> rdf:type <http://www.w3.org/2003/11/swrl#Variable> .
+
+<urn:swrl#prop1> rdf:type <http://www.w3.org/2003/11/swrl#Variable> .
+
+<urn:swrl#cap2> rdf:type <http://www.w3.org/2003/11/swrl#Variable> .
+
+<urn:swrl#prop2> rdf:type <http://www.w3.org/2003/11/swrl#Variable> .
+
+<urn:swrl#max1> rdf:type <http://www.w3.org/2003/11/swrl#Variable> .
+
+<urn:swrl#max2> rdf:type <http://www.w3.org/2003/11/swrl#Variable> .
+
+<urn:swrl#reg1> rdf:type <http://www.w3.org/2003/11/swrl#Variable> .
+
+<urn:swrl#reg2> rdf:type <http://www.w3.org/2003/11/swrl#Variable> .
+
+<urn:swrl#property> rdf:type <http://www.w3.org/2003/11/swrl#Variable> .
+
+[ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
+   <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                       <http://www.w3.org/2003/11/swrl#propertyPredicate> :usesService ;
+                                                       <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#usage> ;
+                                                       <http://www.w3.org/2003/11/swrl#argument2> <urn:swrl#ser1>
+                                                     ] ;
+                                           rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                      rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                                  <http://www.w3.org/2003/11/swrl#propertyPredicate> DUL:hasLocation ;
+                                                                  <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#device1> ;
+                                                                  <http://www.w3.org/2003/11/swrl#argument2> <urn:swrl#loc>
+                                                                ] ;
+                                                      rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                 rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                                             <http://www.w3.org/2003/11/swrl#propertyPredicate> IOTO:hasService ;
+                                                                             <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#device1> ;
+                                                                             <http://www.w3.org/2003/11/swrl#argument2> <urn:swrl#ser1>
+                                                                           ] ;
+                                                                 rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                                                        <http://www.w3.org/2003/11/swrl#propertyPredicate> DUL:hasLocation ;
+                                                                                        <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#device2> ;
+                                                                                        <http://www.w3.org/2003/11/swrl#argument2> <urn:swrl#loc>
+                                                                                      ] ;
+                                                                            rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                                       rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                                                                   <http://www.w3.org/2003/11/swrl#propertyPredicate> IOTO:hasService ;
+                                                                                                   <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#device2> ;
+                                                                                                   <http://www.w3.org/2003/11/swrl#argument2> <urn:swrl#ser2>
+                                                                                                 ] ;
+                                                                                       rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                                                  rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                                                                              <http://www.w3.org/2003/11/swrl#propertyPredicate> SAN:hasActuatingCapability ;
+                                                                                                              <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#device1> ;
+                                                                                                              <http://www.w3.org/2003/11/swrl#argument2> <urn:swrl#cap1>
+                                                                                                            ] ;
+                                                                                                  rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                                                             rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                                                                                         <http://www.w3.org/2003/11/swrl#propertyPredicate> SAN:hasActuatingCapability ;
+                                                                                                                         <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#device2> ;
+                                                                                                                         <http://www.w3.org/2003/11/swrl#argument2> <urn:swrl#cap2>
+                                                                                                                       ] ;
+                                                                                                             rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                                                                        rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#BuiltinAtom> ;
+                                                                                                                                    <http://www.w3.org/2003/11/swrl#builtin> <http://www.w3.org/2003/11/swrlb#lessThan> ;
+                                                                                                                                    <http://www.w3.org/2003/11/swrl#arguments> ( <urn:swrl#max1>
+                                                                                                                                                                                 <urn:swrl#max2>
+                                                                                                                                                                               )
+                                                                                                                                  ] ;
+                                                                                                                        rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                                                                                   rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                                                                                                               <http://www.w3.org/2003/11/swrl#propertyPredicate> SAN:actsOn ;
+                                                                                                                                               <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#device2> ;
+                                                                                                                                               <http://www.w3.org/2003/11/swrl#argument2> <urn:swrl#property>
+                                                                                                                                             ] ;
+                                                                                                                                   rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                                                                                              rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
+                                                                                                                                                          <http://www.w3.org/2003/11/swrl#classPredicate> SAN:Actuator ;
+                                                                                                                                                          <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#device1>
+                                                                                                                                                        ] ;
+                                                                                                                                              rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                                                                                                         rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
+                                                                                                                                                                     <http://www.w3.org/2003/11/swrl#classPredicate> :Application ;
+                                                                                                                                                                     <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#app>
+                                                                                                                                                                   ] ;
+                                                                                                                                                         rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                                                                                                                    rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
+                                                                                                                                                                                <http://www.w3.org/2003/11/swrl#classPredicate> SAN:Actuator ;
+                                                                                                                                                                                <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#device2>
+                                                                                                                                                                              ] ;
+                                                                                                                                                                    rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                                                                                                                               rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                                                                                                                                                           <http://www.w3.org/2003/11/swrl#propertyPredicate> SAN:hasActuatingProperty ;
+                                                                                                                                                                                           <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#cap1> ;
+                                                                                                                                                                                           <http://www.w3.org/2003/11/swrl#argument2> <urn:swrl#prop1>
+                                                                                                                                                                                         ] ;
+                                                                                                                                                                               rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                                                                                                                                          rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                                                                                                                                                                      <http://www.w3.org/2003/11/swrl#propertyPredicate> DUL:hasRegion ;
+                                                                                                                                                                                                      <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#prop1> ;
+                                                                                                                                                                                                      <http://www.w3.org/2003/11/swrl#argument2> <urn:swrl#reg1>
+                                                                                                                                                                                                    ] ;
+                                                                                                                                                                                          rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                                                                                                                                                     rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                                                                                                                                                                                 <http://www.w3.org/2003/11/swrl#propertyPredicate> SAN:hasActuatingProperty ;
+                                                                                                                                                                                                                 <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#cap2> ;
+                                                                                                                                                                                                                 <http://www.w3.org/2003/11/swrl#argument2> <urn:swrl#prop2>
+                                                                                                                                                                                                               ] ;
+                                                                                                                                                                                                     rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                                                                                                                                                                rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                                                                                                                                                                                            <http://www.w3.org/2003/11/swrl#propertyPredicate> DUL:hasRegion ;
+                                                                                                                                                                                                                            <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#prop2> ;
+                                                                                                                                                                                                                            <http://www.w3.org/2003/11/swrl#argument2> <urn:swrl#reg2>
+                                                                                                                                                                                                                          ] ;
+                                                                                                                                                                                                                rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                                                                                                                                                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#DatavaluedPropertyAtom> ;
+                                                                                                                                                                                                                                       <http://www.w3.org/2003/11/swrl#propertyPredicate> :hasMaxValue ;
+                                                                                                                                                                                                                                       <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#reg1> ;
+                                                                                                                                                                                                                                       <http://www.w3.org/2003/11/swrl#argument2> <urn:swrl#max1>
+                                                                                                                                                                                                                                     ] ;
+                                                                                                                                                                                                                           rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                                                                                                                                                                                      rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#DatavaluedPropertyAtom> ;
+                                                                                                                                                                                                                                                  <http://www.w3.org/2003/11/swrl#propertyPredicate> :hasMaxValue ;
+                                                                                                                                                                                                                                                  <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#reg2> ;
+                                                                                                                                                                                                                                                  <http://www.w3.org/2003/11/swrl#argument2> <urn:swrl#max2>
+                                                                                                                                                                                                                                                ] ;
+                                                                                                                                                                                                                                      rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                                                                                                                                                                                                 rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                                                                                                                                                                                                                             <http://www.w3.org/2003/11/swrl#propertyPredicate> SAN:actsOn ;
+                                                                                                                                                                                                                                                             <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#device1> ;
+                                                                                                                                                                                                                                                             <http://www.w3.org/2003/11/swrl#argument2> <urn:swrl#property>
+                                                                                                                                                                                                                                                           ] ;
+                                                                                                                                                                                                                                                 rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                                                                                                                                                                                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                                                                                                                                                                                                                                        <http://www.w3.org/2003/11/swrl#propertyPredicate> :hasServiceUsage ;
+                                                                                                                                                                                                                                                                        <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#app> ;
+                                                                                                                                                                                                                                                                        <http://www.w3.org/2003/11/swrl#argument2> <urn:swrl#usage>
+                                                                                                                                                                                                                                                                      ] ;
+                                                                                                                                                                                                                                                            rdf:rest rdf:nil
+                                                                                                                                                                                                                                                          ]
+                                                                                                                                                                                                                                               ]
+                                                                                                                                                                                                                                    ]
+                                                                                                                                                                                                                         ]
+                                                                                                                                                                                                              ]
+                                                                                                                                                                                                   ]
+                                                                                                                                                                                        ]
+                                                                                                                                                                             ]
+                                                                                                                                                                  ]
+                                                                                                                                                       ]
+                                                                                                                                            ]
+                                                                                                                                 ]
+                                                                                                                      ]
+                                                                                                           ]
+                                                                                                ]
+                                                                                     ]
+                                                                          ]
+                                                               ]
+                                                    ]
+                                         ] ;
+   <http://www.w3.org/2003/11/swrl#head> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                       <http://www.w3.org/2003/11/swrl#propertyPredicate> :UpgradeTo ;
+                                                       <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#usage> ;
+                                                       <http://www.w3.org/2003/11/swrl#argument2> <urn:swrl#ser2>
+                                                     ] ;
+                                           rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                      rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
+                                                                  <http://www.w3.org/2003/11/swrl#classPredicate> :ServiceUpgrade ;
+                                                                  <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#app>
+                                                                ] ;
+                                                      rdf:rest rdf:nil
+                                                    ]
+                                         ]
+ ] .
+
+[ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
+   <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                       <http://www.w3.org/2003/11/swrl#propertyPredicate> :usesService ;
+                                                       <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#usage> ;
+                                                       <http://www.w3.org/2003/11/swrl#argument2> <urn:swrl#ser>
+                                                     ] ;
+                                           rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                      rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
+                                                                  <http://www.w3.org/2003/11/swrl#classPredicate> :Application ;
+                                                                  <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#app>
+                                                                ] ;
+                                                      rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                 rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#SameIndividualAtom> ;
+                                                                             <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#state> ;
+                                                                             <http://www.w3.org/2003/11/swrl#argument2> :OfflineState
+                                                                           ] ;
+                                                                 rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                                                        <http://www.w3.org/2003/11/swrl#propertyPredicate> IOTO:hasService ;
+                                                                                        <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#dev> ;
+                                                                                        <http://www.w3.org/2003/11/swrl#argument2> <urn:swrl#ser>
+                                                                                      ] ;
+                                                                            rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                                       rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                                                                   <http://www.w3.org/2003/11/swrl#propertyPredicate> :hasServiceUsage ;
+                                                                                                   <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#app> ;
+                                                                                                   <http://www.w3.org/2003/11/swrl#argument2> <urn:swrl#usage>
+                                                                                                 ] ;
+                                                                                       rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                                                  rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                                                                              <http://www.w3.org/2003/11/swrl#propertyPredicate> DOGONT:hasState ;
+                                                                                                              <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#dev> ;
+                                                                                                              <http://www.w3.org/2003/11/swrl#argument2> <urn:swrl#state>
+                                                                                                            ] ;
+                                                                                                  rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                                                             rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
+                                                                                                                         <http://www.w3.org/2003/11/swrl#classPredicate> DOGONT:Actuator ;
+                                                                                                                         <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#dev>
+                                                                                                                       ] ;
+                                                                                                             rdf:rest rdf:nil
+                                                                                                           ]
+                                                                                                ]
+                                                                                     ]
+                                                                          ]
+                                                               ]
+                                                    ]
+                                         ] ;
+   <http://www.w3.org/2003/11/swrl#head> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
+                                                       <http://www.w3.org/2003/11/swrl#classPredicate> :ServiceDisruption ;
+                                                       <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#app>
+                                                     ] ;
+                                           rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                      rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                                  <http://www.w3.org/2003/11/swrl#propertyPredicate> :ServiceDisrupted ;
+                                                                  <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#usage> ;
+                                                                  <http://www.w3.org/2003/11/swrl#argument2> <urn:swrl#ser>
+                                                                ] ;
+                                                      rdf:rest rdf:nil
+                                                    ]
+                                         ]
+ ] .
+
+[ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
+   <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                       <http://www.w3.org/2003/11/swrl#propertyPredicate> :usesService ;
+                                                       <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#usage> ;
+                                                       <http://www.w3.org/2003/11/swrl#argument2> <urn:swrl#ser>
+                                                     ] ;
+                                           rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                      rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
+                                                                  <http://www.w3.org/2003/11/swrl#classPredicate> IOTO:Sensing_device ;
+                                                                  <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#dev>
+                                                                ] ;
+                                                      rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                 rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
+                                                                             <http://www.w3.org/2003/11/swrl#classPredicate> :Application ;
+                                                                             <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#app>
+                                                                           ] ;
+                                                                 rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#SameIndividualAtom> ;
+                                                                                        <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#state> ;
+                                                                                        <http://www.w3.org/2003/11/swrl#argument2> :OfflineState
+                                                                                      ] ;
+                                                                            rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                                       rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                                                                   <http://www.w3.org/2003/11/swrl#propertyPredicate> IOTO:hasService ;
+                                                                                                   <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#dev> ;
+                                                                                                   <http://www.w3.org/2003/11/swrl#argument2> <urn:swrl#ser>
+                                                                                                 ] ;
+                                                                                       rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                                                  rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                                                                              <http://www.w3.org/2003/11/swrl#propertyPredicate> :hasServiceUsage ;
+                                                                                                              <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#app> ;
+                                                                                                              <http://www.w3.org/2003/11/swrl#argument2> <urn:swrl#usage>
+                                                                                                            ] ;
+                                                                                                  rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                                                             rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                                                                                         <http://www.w3.org/2003/11/swrl#propertyPredicate> DOGONT:hasState ;
+                                                                                                                         <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#dev> ;
+                                                                                                                         <http://www.w3.org/2003/11/swrl#argument2> <urn:swrl#state>
+                                                                                                                       ] ;
+                                                                                                             rdf:rest rdf:nil
+                                                                                                           ]
+                                                                                                ]
+                                                                                     ]
+                                                                          ]
+                                                               ]
+                                                    ]
+                                         ] ;
+   <http://www.w3.org/2003/11/swrl#head> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
+                                                       <http://www.w3.org/2003/11/swrl#classPredicate> :ServiceDisruption ;
+                                                       <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#app>
+                                                     ] ;
+                                           rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                      rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                                  <http://www.w3.org/2003/11/swrl#propertyPredicate> :ServiceDisrupted ;
+                                                                  <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#usage> ;
+                                                                  <http://www.w3.org/2003/11/swrl#argument2> <urn:swrl#ser>
+                                                                ] ;
+                                                      rdf:rest rdf:nil
+                                                    ]
+                                         ]
+ ] .
+
+[ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
+   <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                       <http://www.w3.org/2003/11/swrl#propertyPredicate> :usesService ;
+                                                       <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#usage> ;
+                                                       <http://www.w3.org/2003/11/swrl#argument2> <urn:swrl#ser1>
+                                                     ] ;
+                                           rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                      rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
+                                                                  <http://www.w3.org/2003/11/swrl#classPredicate> IOTO:Sensing_device ;
+                                                                  <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#device1>
+                                                                ] ;
+                                                      rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                 rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                                             <http://www.w3.org/2003/11/swrl#propertyPredicate> DUL:hasLocation ;
+                                                                             <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#device1> ;
+                                                                             <http://www.w3.org/2003/11/swrl#argument2> <urn:swrl#loc>
+                                                                           ] ;
+                                                                 rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                                                        <http://www.w3.org/2003/11/swrl#propertyPredicate> IOTO:hasService ;
+                                                                                        <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#device1> ;
+                                                                                        <http://www.w3.org/2003/11/swrl#argument2> <urn:swrl#ser1>
+                                                                                      ] ;
+                                                                            rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                                       rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
+                                                                                                   <http://www.w3.org/2003/11/swrl#classPredicate> IOTO:Sensing_device ;
+                                                                                                   <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#device2>
+                                                                                                 ] ;
+                                                                                       rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                                                  rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                                                                              <http://www.w3.org/2003/11/swrl#propertyPredicate> IOTO:hasService ;
+                                                                                                              <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#device2> ;
+                                                                                                              <http://www.w3.org/2003/11/swrl#argument2> <urn:swrl#ser2>
+                                                                                                            ] ;
+                                                                                                  rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                                                             rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                                                                                         <http://www.w3.org/2003/11/swrl#propertyPredicate> DUL:hasLocation ;
+                                                                                                                         <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#device2> ;
+                                                                                                                         <http://www.w3.org/2003/11/swrl#argument2> <urn:swrl#loc>
+                                                                                                                       ] ;
+                                                                                                             rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                                                                        rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                                                                                                    <http://www.w3.org/2003/11/swrl#propertyPredicate> :hasSensingProperty ;
+                                                                                                                                    <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#cap1> ;
+                                                                                                                                    <http://www.w3.org/2003/11/swrl#argument2> <urn:swrl#prop1>
+                                                                                                                                  ] ;
+                                                                                                                        rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                                                                                   rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                                                                                                               <http://www.w3.org/2003/11/swrl#propertyPredicate> :hasSensingProperty ;
+                                                                                                                                               <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#cap2> ;
+                                                                                                                                               <http://www.w3.org/2003/11/swrl#argument2> <urn:swrl#prop2>
+                                                                                                                                             ] ;
+                                                                                                                                   rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                                                                                              rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#BuiltinAtom> ;
+                                                                                                                                                          <http://www.w3.org/2003/11/swrl#builtin> <http://www.w3.org/2003/11/swrlb#lessThan> ;
+                                                                                                                                                          <http://www.w3.org/2003/11/swrl#arguments> ( <urn:swrl#max1>
+                                                                                                                                                                                                       <urn:swrl#max2>
+                                                                                                                                                                                                     )
+                                                                                                                                                        ] ;
+                                                                                                                                              rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                                                                                                         rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
+                                                                                                                                                                     <http://www.w3.org/2003/11/swrl#classPredicate> :Application ;
+                                                                                                                                                                     <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#app>
+                                                                                                                                                                   ] ;
+                                                                                                                                                         rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                                                                                                                    rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                                                                                                                                                <http://www.w3.org/2003/11/swrl#propertyPredicate> DUL:hasRegion ;
+                                                                                                                                                                                <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#prop1> ;
+                                                                                                                                                                                <http://www.w3.org/2003/11/swrl#argument2> <urn:swrl#reg1>
+                                                                                                                                                                              ] ;
+                                                                                                                                                                    rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                                                                                                                               rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                                                                                                                                                           <http://www.w3.org/2003/11/swrl#propertyPredicate> DUL:hasRegion ;
+                                                                                                                                                                                           <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#prop2> ;
+                                                                                                                                                                                           <http://www.w3.org/2003/11/swrl#argument2> <urn:swrl#reg2>
+                                                                                                                                                                                         ] ;
+                                                                                                                                                                               rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                                                                                                                                          rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#DatavaluedPropertyAtom> ;
+                                                                                                                                                                                                      <http://www.w3.org/2003/11/swrl#propertyPredicate> :hasMaxValue ;
+                                                                                                                                                                                                      <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#reg1> ;
+                                                                                                                                                                                                      <http://www.w3.org/2003/11/swrl#argument2> <urn:swrl#max1>
+                                                                                                                                                                                                    ] ;
+                                                                                                                                                                                          rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                                                                                                                                                     rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#DatavaluedPropertyAtom> ;
+                                                                                                                                                                                                                 <http://www.w3.org/2003/11/swrl#propertyPredicate> :hasMaxValue ;
+                                                                                                                                                                                                                 <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#reg2> ;
+                                                                                                                                                                                                                 <http://www.w3.org/2003/11/swrl#argument2> <urn:swrl#max2>
+                                                                                                                                                                                                               ] ;
+                                                                                                                                                                                                     rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                                                                                                                                                                rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                                                                                                                                                                                            <http://www.w3.org/2003/11/swrl#propertyPredicate> :observes ;
+                                                                                                                                                                                                                            <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#device1> ;
+                                                                                                                                                                                                                            <http://www.w3.org/2003/11/swrl#argument2> <urn:swrl#property>
+                                                                                                                                                                                                                          ] ;
+                                                                                                                                                                                                                rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                                                                                                                                                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                                                                                                                                                                                                       <http://www.w3.org/2003/11/swrl#propertyPredicate> :observes ;
+                                                                                                                                                                                                                                       <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#device2> ;
+                                                                                                                                                                                                                                       <http://www.w3.org/2003/11/swrl#argument2> <urn:swrl#property>
+                                                                                                                                                                                                                                     ] ;
+                                                                                                                                                                                                                           rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                                                                                                                                                                                      rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                                                                                                                                                                                                                  <http://www.w3.org/2003/11/swrl#propertyPredicate> :hasServiceUsage ;
+                                                                                                                                                                                                                                                  <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#app> ;
+                                                                                                                                                                                                                                                  <http://www.w3.org/2003/11/swrl#argument2> <urn:swrl#usage>
+                                                                                                                                                                                                                                                ] ;
+                                                                                                                                                                                                                                      rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                                                                                                                                                                                                 rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                                                                                                                                                                                                                             <http://www.w3.org/2003/11/swrl#propertyPredicate> :hasSensingCapability ;
+                                                                                                                                                                                                                                                             <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#device1> ;
+                                                                                                                                                                                                                                                             <http://www.w3.org/2003/11/swrl#argument2> <urn:swrl#cap1>
+                                                                                                                                                                                                                                                           ] ;
+                                                                                                                                                                                                                                                 rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                                                                                                                                                                                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                                                                                                                                                                                                                                        <http://www.w3.org/2003/11/swrl#propertyPredicate> :hasSensingCapability ;
+                                                                                                                                                                                                                                                                        <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#device2> ;
+                                                                                                                                                                                                                                                                        <http://www.w3.org/2003/11/swrl#argument2> <urn:swrl#cap2>
+                                                                                                                                                                                                                                                                      ] ;
+                                                                                                                                                                                                                                                            rdf:rest rdf:nil
+                                                                                                                                                                                                                                                          ]
+                                                                                                                                                                                                                                               ]
+                                                                                                                                                                                                                                    ]
+                                                                                                                                                                                                                         ]
+                                                                                                                                                                                                              ]
+                                                                                                                                                                                                   ]
+                                                                                                                                                                                        ]
+                                                                                                                                                                             ]
+                                                                                                                                                                  ]
+                                                                                                                                                       ]
+                                                                                                                                            ]
+                                                                                                                                 ]
+                                                                                                                      ]
+                                                                                                           ]
+                                                                                                ]
+                                                                                     ]
+                                                                          ]
+                                                               ]
+                                                    ]
+                                         ] ;
+   <http://www.w3.org/2003/11/swrl#head> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                       <http://www.w3.org/2003/11/swrl#propertyPredicate> :UpgradeTo ;
+                                                       <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#usage> ;
+                                                       <http://www.w3.org/2003/11/swrl#argument2> <urn:swrl#ser2>
+                                                     ] ;
+                                           rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                      rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
+                                                                  <http://www.w3.org/2003/11/swrl#classPredicate> :ServiceUpgrade ;
+                                                                  <http://www.w3.org/2003/11/swrl#argument1> <urn:swrl#app>
+                                                                ] ;
+                                                      rdf:rest rdf:nil
+                                                    ]
+                                         ]
+ ] .
+
+###  Generated by the OWL API (version 4.5.9.2019-02-01T07:24:44Z) https://github.com/owlcs/owlapi

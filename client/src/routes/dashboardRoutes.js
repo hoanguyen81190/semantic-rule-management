@@ -1,18 +1,10 @@
 // core components/views
-import ConsumerSystems from '../containers/consumersystems/ConsumerSystems'
 import KnowledgeBase from '../containers/knowledgebase/KnowledgeBase'
 import Queries from '../containers/queries/Queries'
 import Rules from '../containers/rules/Rules'
 import Ontology from '../containers/ontology/Ontology'
 
 const dashboardRoutes = [
-  {
-    path: '/consumersystems',
-    sidebarName: 'Consumer Systems',
-    navbarName: 'Consumer Systems',
-    //icon: Description,
-    component: ConsumerSystems
-  },
   {
     path: '/knowledgebase',
     sidebarName: 'Knowledge Base',
@@ -44,7 +36,7 @@ const dashboardRoutes = [
   {
     redirect: true,
     path: '/',
-    to: '/consumersystems',
+    to: '/rules',
     navbarName: 'Redirect'
   }
 ]

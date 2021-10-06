@@ -12,7 +12,12 @@ import Typography from '@material-ui/core/Typography'
 
 import RDFGraph from '../../components/Rule/RDFGraph'
 
+import { displayObjectText } from '../../core/rdf_parser'
+
 const useStyles = makeStyles((theme) => ({
+  megaRoot: {
+
+  },
   root: {
     //layout: 1,
     height: "100%",
@@ -38,29 +43,19 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-/*
-<List component="nav" className={classes.root} aria-label="mailbox folders">
-  {jenaRules.statement.body.map((titem, tindex) => {
-    return (<Grid container spacing={3}>
-      <Grid item xs={4}>
-        <Paper className={classes.paper}>{titem.subject.value}</Paper>
-      </Grid>
-      <Grid item xs={4}>
-        <Paper className={classes.paper}>{titem.predicate.value}</Paper>
-      </Grid>
-      <Grid item xs={4}>
-        <Paper className={classes.paper}>{titem.object.value}</Paper>
-      </Grid>
-    </Grid>)
-  })}
-</List>
-*/
-
 export default function RuleComponent(props) {
   const { jenaRules } = props
   const classes = useStyles()
 
   return (
+    <div className={classes.megaRoot} >
+    <Table className={classes.table} aria-label="simple table">
+      <TableBody>
+        {jenaRules.statement.head.map((titem, tindex) => (
+          titem.getDisplayComponent(tindex)
+        ))}
+      </TableBody>
+    </Table>
     <Grid container className={classes.root} spacing={2}>
       <Grid key="list" className={classes.list} item>
         <Table className={classes.table} aria-label="simple table">
@@ -75,10 +70,10 @@ export default function RuleComponent(props) {
             {jenaRules.statement.body.map((titem, tindex) => (
               <TableRow key={tindex}>
                 <TableCell component="th" scope="row">
-                  {titem.subject.value}
+                  {displayObjectText(titem.subject)}
                 </TableCell>
-                <TableCell >{titem.predicate.value}</TableCell>
-                <TableCell >{titem.object.value}</TableCell>
+                <TableCell >{displayObjectText(titem.predicate)}</TableCell>
+                <TableCell >{displayObjectText(titem.object)}</TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -88,5 +83,6 @@ export default function RuleComponent(props) {
         <RDFGraph rdfTriples={jenaRules.statement.body} isEditable={false}/>
       </Grid>
     </Grid>
+    </div>
   )
 }

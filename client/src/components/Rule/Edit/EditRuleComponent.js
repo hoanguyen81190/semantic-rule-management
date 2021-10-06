@@ -11,6 +11,8 @@ import Paper from '@material-ui/core/Paper'
 import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
 import IconButton from '@material-ui/core/IconButton'
+import EditIcon from '@material-ui/icons/Edit'
+import DeleteIcon from '@material-ui/icons/Delete'
 import AddIcon from '@material-ui/icons/Add'
 import ArrowRightAltIcon from '@material-ui/icons/ArrowRightAlt'
 import Button from '@material-ui/core/Button'
@@ -51,7 +53,10 @@ const useStyles = makeStyles((theme) => ({
 
   },
   textField: {
-    margin: 10
+    margin: 5
+  },
+  button: {
+    //marginLeft: 10
   },
   editTriple: {
   },
@@ -70,8 +75,15 @@ export default function EditRuleComponent(props) {
   const inputPredicateRef = React.useRef(null)
   const inputObjectRef = React.useRef(null)
 
-  const [spacing, setSpacing] = React.useState(2)
+  const [ spacing, setSpacing ] = React.useState(2)
+
+  //rule information
+  const [ editSystemName, setEditSystemName ] = React.useState('')
+  const [ editRuleName, setEditRuleName ] = React.useState('')
+  const [ editActionList, setEditActionList ] = React.useState([])
   const [ edittingGraph, setEdittingGraph ] = React.useState({prefixes: [], triples: []})
+
+  //visualization
   const [ disableEditPred, setDisableEditPred ] = React.useState(true)
   const [ disableEditObj, setDisableEditObj ] = React.useState(true)
   const [ variablesList, setVariablesList ] = React.useState([])
@@ -108,7 +120,7 @@ export default function EditRuleComponent(props) {
         }
       })
 
-      const queryOWL = selectQueryBuilder([ONTOLOGY.ontologyConstants.OWL], ['?s'], [['?s', '?p', 'owl:ObjectProperty']], 1000)
+      const queryOWL = selectQueryBuilder([ONTOLOGY.ontologyConstants.AUTO], ['?s'], [['?s', '?p', 'owl:ObjectProperty']], 1000)
       ac_rest_manager.sparqlQuery("select", queryOWL, (quads) => {
         if (quads) {
           var dataAction = {
@@ -128,7 +140,6 @@ export default function EditRuleComponent(props) {
     triples.map((titem, tindex) => {
       conditions.push([titem.subject.value, titem.ontology + ':' + titem.predicate.value, titem.object.value])
     })
-    console.log("constraints", conditions)
     return conditions
   }
 
@@ -144,7 +155,6 @@ export default function EditRuleComponent(props) {
         predicateSuggestionList = store.getState().ontology_properties
       }
       else {
-        console.log("constraints", constraints)
         // const currentCondition = [subject, ]
         // const query = selectQueryBuilder(edittingGraph.prefixes,
         //                                  ['?s'],
@@ -239,6 +249,10 @@ export default function EditRuleComponent(props) {
     return false
   }
 
+  const handleAddActionClick = (event, index) => {
+
+  }
+
   const handleOKClick = (event, index) => {
     callback(true)
   }
@@ -247,31 +261,45 @@ export default function EditRuleComponent(props) {
     callback(false)
   }
 
-  console.log("edit graph", edittingGraph)
 
   return (
     <div>
+    {/*------------------- Modify information of the rule ------------------- */}
     <Grid container className={classes.name} spacing={2} alignItems='center'>
       <Grid item xs={4} className={classes.textField}>
-        <TextField id="standard-full-width" variant="outlined" fullWidth label="Name" />
+        <TextField id="standard-full-width" variant="outlined" fullWidth label="System Name" />
       </Grid>
       <Grid item xs={4} className={classes.textField}>
-        <TextField id="standard-full-width" variant="outlined" fullWidth label="Function" />
+        <TextField id="standard-full-width" variant="outlined" fullWidth label="Rule Name" />
       </Grid>
-      <Grid item>
+      <Grid item className={classes.button}>
+        <Button variant="contained" onClick={handleAddActionClick}>
+          add action
+        </Button>
+      </Grid>
+      <Grid item className={classes.button}>
         <Button variant="contained" onClick={handleOKClick}>
           create
         </Button>
       </Grid>
-      <Grid item>
+      <Grid item >
         <Button variant="contained" onClick={handleCancelClick} >
           Cancel
         </Button>
       </Grid>
     </Grid>
+    {/*------------------- HEAD: Action Table ------------------- */}
+    <Table className={classes.table} aria-label="simple table">
+      <TableBody>
+        {editActionList.map((titem, tindex) => (
+          titem.getDisplayComponent(tindex)
+        ))}
+      </TableBody>
+    </Table>
+    {/*------------------ BODY: Statement & Viz------------------ */}
     <Grid container className={classes.root} spacing={2}>
+      {/*------------------ Left ------------------ */}
       <Grid key="list" className={classes.list} item>
-
         <Table className={classes.table} aria-label="simple table">
           <TableHead>
             <TableRow>
@@ -293,6 +321,7 @@ export default function EditRuleComponent(props) {
           </TableBody>
         </Table>
       </Grid>
+      {/*------------------ Right ------------------ */}
       <Grid key="graph" className={classes.graph} item >
         <Grid container alignItems='center' className={classes.editTriple} spacing={0}>
           <Grid item xs={3} className={classes.autoComplete}>
@@ -346,6 +375,7 @@ export default function EditRuleComponent(props) {
         <RDFGraph rdfTriples={edittingGraph.triples} rerender={rerender} isEditable={false}/>
       </Grid>
     </Grid>
+    {/*------------------ Action Dialog ------------------ */}
     </div>
   )
 }

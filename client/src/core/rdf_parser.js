@@ -9,25 +9,28 @@ import rdfParser from "rdf-parse"
 import { RDFTriple } from "./rdfModel"
 import * as RdfString from "rdf-string"
 import ONTOLOGY from "./ontologyConstants"
+import * as ActionModel from "./actionModel"
 
 const ttl_read = require('@graphy/content.ttl.read')
 
-const DEFAULT_ONTOLOGY = "base"
+const DEFAULT_ONTOLOGY = "auto"
 const JENA_ONTOLOGY = "jena"
 
-export function ruleParser(stringInput) {
-  var input = JSON.parse(stringInput)
-  // var ruleRegex = /\[(.*?)\]/
-  // var ruleString = stringInput.match(/\[(.*?)\]/)[1]
-  // var ruleAndName = ruleString.match(/([^:]*):(.*)/)
-  //
-  // var name = ruleAndName[1]
-  // var rule = ruleAndName[2]
+export function getRuleResponseParser(response) {
+  var output = []
+  response.map((ritem, rindex) => {
+    ritem.rules.map((jritem, jrindex) => {
+      output.push({
+        systemName: ritem.systemName,
+        ...parseRule(jritem)
+      })
+    })
+  })
 
-  var rdfTriples = ""//rdfParser.parse(rule)
-  console.log("PARSED RULE", input)
-  return input;
+  return output
 }
+
+//-----------------------------------------------------------
 
 export function turtleParser(stringInput) {
   var results = []
@@ -45,6 +48,16 @@ export function turtleParser(stringInput) {
 }
 
 //------------------------------------------------------------
+export function jenaRuleParser(stringInput) {
+  var prefixes = extractPrefixes(stringInput)
+  var rules = extractRules(stringInput)
+  return {
+    prefixes: prefixes,
+    rules: rules
+  }
+}
+
+//------------------------------------------------------------
 function extractPrefixes(stringInput) {
   var prefixRegex = new RegExp('@.*>','g')
   var prefixes = []
@@ -55,16 +68,30 @@ function extractPrefixes(stringInput) {
   return prefixes
 }
 
-//------------------------------------------------------------
 function extractRules(stringInput) {
   var rulesText = stringInput.replace(/(\r\n|\n|\r)/gm, ' ');
   var ruleRegex = new RegExp('#( )*\\[([^\\]]+)\\]', 'g')
   var rules = []
   var match
   while((match = ruleRegex.exec(rulesText)) != null) {
-    rules.push(parseRule(match[0]))
+    rules.push({...parseRule(match[0]),
+    systemName: "testFile"})
   }
   return rules
+}
+
+function parseRule(ruleString) {
+  //PARSE NAME
+  var ruleRegex = /(?<=\[).+?(?=\])/i
+  var rule = ruleRegex.exec(ruleString)
+  var name = rule[0].substr(0, rule[0].indexOf(':'))
+  var statement = rule[0].substr(rule[0].indexOf(':')+1)
+
+  //PARSE STATEMENT
+  return {
+    name: name,
+    statement: parseStatement(statement)
+  }
 }
 
 function parseStatement(statementString) {
@@ -73,57 +100,102 @@ function parseStatement(statementString) {
     parts = statementString.split('->')
     return {
       body: extractRDFTriple(parts[0]),
-      head: parts[1]
+      head: parseActions(parts[1])
     }
   }
   else if (statementString.search(/<-/) != -1) {
     parts = statementString.split('<-')
     return {
       body: extractRDFTriple(parts[1]),
-      head: parts[0]
+      head: parseActions(parts[0])
     }
   }
   else {
     return null
   }
-
 }
 
-export function parseObject(objStr) {
-  var ontologyParts = objStr.split(':')
-  if (ontologyParts.length > 1) {//belongs to an ontology
-    return {
-      value: ontologyParts[1],
-      ontology: ontologyParts[0]
+function parseActions(actionString) {
+  actionString = actionString.replace(/ /g, '')
+  actionString = actionString.replace(/\"/g, '')
+
+  var actions = []
+  var match = null
+
+  var substituteRegex = new RegExp('substituteService\(([^)]+)\)', 'g')
+  while(match = substituteRegex.exec(actionString)) {
+    let output = parseSubstituteAction(match[0])
+    if(output !== undefined) {
+      actions.push(output)
     }
   }
-  else { //either variable or a literal
-    var variableParts = objStr.split('?')
-    if (variableParts.length > 1) { //is a variable
-      return {
-        value: variableParts[1],
-        isVar: true
-      }
-    }
-    return {
-      value: objStr,
-      isVar: false
+
+  var configureRegex = new RegExp('configure\(([^)]+)\)', 'g')
+  while(match = configureRegex.exec(actionString)) {
+    let output = parseConfigureAction(match[0])
+    if(output !== undefined) {
+      actions.push(output)
     }
   }
+
+  return actions
+}
+
+function parseSubstituteAction(actionString) {
+  let openChar = actionString.indexOf('(')
+  actionString = actionString.substr(openChar + 1)
+  let parts = actionString.split(',')
+  return new ActionModel.SubstituteActionModel(
+    parseObject(parts[0]),
+    parseObject(parts[1]),
+    parseObject(parts[2]),
+    parseObject(parts[3]),
+    parseObject(parts[4])
+  )
+}
+
+function parseConfigureAction(actionString) {
+  let openChar = actionString.indexOf('(')
+  actionString = actionString.substr(openChar + 1)
+  let parts = actionString.split(',')
+  return new ActionModel.ConfigureActionModel(
+    parseObject(parts[0]),
+    parseObject(parts[1]),
+    parseObject(parts[2])
+  )
+}
+
+function extractRDFTriple(stringInput) {
+  var rdfTripleRegex = new RegExp('\(([^)]+)\)', 'g')
+  var rdfTriples = []
+  var match = null
+  while(match = rdfTripleRegex.exec(stringInput)) {
+    var output = parseRDFTriples(match[0])
+    if(output !== undefined) {
+      rdfTriples.push(output)
+    }
+  }
+  return rdfTriples
 }
 
 function parseRDFTriples(inputString) {
   var rdfString = inputString.trim()
+  let xsdPrefix = rdfString.indexOf('\^')
+  if (xsdPrefix !== -1) {
+    rdfString = rdfString.substr(0, xsdPrefix)
+  }
   //Check if it is an RDFTriple
   var rdfNormal = rdfString.indexOf('(')
 
   if (rdfNormal > 0) {
-    let comma = rdfString.indexOf(',')
+
+    let comma = rdfString.indexOf(' ')
     let func = rdfString.substr(0, rdfNormal)
     let predicate = {
       value: rdfString.substr(0, rdfNormal),
       ontology: JENA_ONTOLOGY
     }
+
     return new RDFTriple(parseObject(rdfString.substr(rdfNormal + 1, comma - rdfNormal - 1)),
                          predicate,
                          parseObject(rdfString.substr(comma + 1)))
@@ -145,39 +217,27 @@ function parseRDFTriples(inputString) {
 
 }
 
-function extractRDFTriple(stringInput) {
-  var rdfTripleRegex = new RegExp('\(([^)]+)\)', 'g')
-  var rdfTriples = []
-  var match = null
-  while(match = rdfTripleRegex.exec(stringInput)) {
-    var output = parseRDFTriples(match[0])
-    if(output !== undefined) {
-      rdfTriples.push(output)
+export function parseObject(objStr) {
+  objStr = objStr.replace(/\'/g, '')
+  var ontologyParts = objStr.split(':')
+  if (ontologyParts.length > 1) {//belongs to an ontology
+    return {
+      value: ontologyParts[1],
+      ontology: ontologyParts[0]
     }
   }
-  return rdfTriples
-}
-
-function parseRule(ruleString) {
-  //PARSE NAME
-  var ruleRegex = /(?<=\[).+?(?=\])/i
-  var rule = ruleRegex.exec(ruleString)
-  var name = rule[0].substr(0, rule[0].indexOf(':'))
-  var statement = rule[0].substr(rule[0].indexOf(':')+1)
-
-  //PARSE STATEMENT
-  return {
-    name: name,
-    statement: parseStatement(statement)
-  }
-}
-
-export function jenaRuleParser(stringInput) {
-  var prefixes = extractPrefixes(stringInput)
-  var rules = extractRules(stringInput)
-  return {
-    prefixes: prefixes,
-    rules: rules
+  else { //either variable or a literal
+    var variableParts = objStr.split('?')
+    if (variableParts.length > 1) { //is a variable
+      return {
+        value: variableParts[1],
+        isVar: true
+      }
+    }
+    return {
+      value: objStr,
+      isVar: false
+    }
   }
 }
 
@@ -265,4 +325,17 @@ export function convertToAutoCompleteRDF(quads) {
     })
   })
   return results
+}
+
+//display
+export function displayObjectText(obj) {
+  if (obj.isVar) {
+    return '?' + obj.value
+  }
+  else if (obj.ontology !== undefined) {
+    return obj.ontology + ':' + obj.value
+  }
+  else {
+    return obj.value
+  }
 }
