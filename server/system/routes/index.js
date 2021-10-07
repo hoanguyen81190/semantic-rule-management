@@ -92,13 +92,16 @@ router.post(PROXY_APIS.TEST, (req, res, next) => {
 //------------------------COMUNICA-------------------------
 router.post(COMUNICA_APIS.SPARQL_QUERY, async (req, res, next) => {
   const { type, query } = req.body
+
   if (type === "select") {
-    var result = await sparqlSelectQuery(query)
-    res.json({data: result})
+    await sparqlSelectQuery(query, (result) => {
+      res.json({data: result})
+    })
   }
   else if (type === "construct") {
-    var result = await sparqlConstructQuery(query)
-    res.json({data: result})
+    await sparqlConstructQuery(query, (result) => {
+      res.json({data: result})
+    })
   }
 })
 

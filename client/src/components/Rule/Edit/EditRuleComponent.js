@@ -17,13 +17,17 @@ import AddIcon from '@material-ui/icons/Add'
 import ArrowRightAltIcon from '@material-ui/icons/ArrowRightAlt'
 import Button from '@material-ui/core/Button'
 
+import EditAction from './EditAction'
+
 import { RDFTriple } from "../../../core/rdfModel"
+import * as ActionModel from "../../../core/actionModel"
 import Autocomplete from '@material-ui/lab/Autocomplete'
 
 import RDFGraph from '../RDFGraph'
+import RdfTriplesTable from '../RdfTriplesTable'
 import ac_rest_manager from '../../../core/ac_rest_manager'
 import { constructQueryBuilder, selectQueryBuilder, common_queries } from '../../../core/comunica'
-import { convertToAutoCompleteRDF, parseObject } from '../../../core/rdf_parser'
+import { convertToAutoCompleteRDF, parseObject, displayObjectText } from '../../../core/rdf_parser'
 import store from '../../../core/store'
 import ONTOLOGY from "../../../core/ontologyConstants"
 import './EditFact.css'
@@ -83,18 +87,23 @@ export default function EditRuleComponent(props) {
   const [ editActionList, setEditActionList ] = React.useState([])
   const [ edittingGraph, setEdittingGraph ] = React.useState({prefixes: [], triples: []})
 
+  const [ openActionDialog, setOpenActionDialog ] = React.useState(false)
+
   //visualization
   const [ disableEditPred, setDisableEditPred ] = React.useState(true)
   const [ disableEditObj, setDisableEditObj ] = React.useState(true)
   const [ variablesList, setVariablesList ] = React.useState([])
   const [ rerender, setRerender ] = React.useState(0)
 
-  var predicateSuggestionList = []
-  var objectSuggestionList = []
+  const [ subjectSuggestionList, setSubjectSuggestionList ] = React.useState([])
+  const [ predicateSuggestionList, setPredicateSuggestionList ] = React.useState([])
+  const [ objectSuggestionList, setObjectSuggestionList ] = React.useState([])
 
   useEffect(() => {
     if(store.getState().ontology_classes.length === 0) {
+      console.log("subject query", common_queries.get_all_classes)
       ac_rest_manager.sparqlQuery("select", common_queries.get_all_classes, (quads) => {
+        console.log("returned value", quads)
         if (quads) {
           var data = convertToAutoCompleteRDF(quads)
           var dataAction = {
@@ -103,12 +112,13 @@ export default function EditRuleComponent(props) {
           }
 
           store.dispatch(dataAction)
+          setSubjectSuggestionList(data)
         }
       })
     }
 
-    if(store.getState().ontology_properties.length === 0) {
-      const queryRDF = selectQueryBuilder([ONTOLOGY.ontologyConstants.RDF], ['?s'], [['?s', '?p', 'rdf:Property']], 1000)
+    if(store.getState().ontology_properties.length <= 4) {
+      const queryRDF = selectQueryBuilder([ONTOLOGY.ontologyConstants.RDF], ['?sai'], [['?sai', '?pai', 'rdf:Property']], 1000)
       ac_rest_manager.sparqlQuery("select", queryRDF, (quads) => {
         if (quads) {
           var dataAction = {
@@ -117,28 +127,28 @@ export default function EditRuleComponent(props) {
           }
 
           store.dispatch(dataAction)
-        }
-      })
 
-      const queryOWL = selectQueryBuilder([ONTOLOGY.ontologyConstants.AUTO], ['?s'], [['?s', '?p', 'owl:ObjectProperty']], 1000)
-      ac_rest_manager.sparqlQuery("select", queryOWL, (quads) => {
-        if (quads) {
-          var dataAction = {
-            type: 'ALL_ONTOLOGY_PROPERTIES',
-            ontology_properties: convertToAutoCompleteRDF(quads)
-          }
+          const queryOWL = selectQueryBuilder([ONTOLOGY.ontologyConstants.SAI], ['?sai'], [['?sai', '?pai', 'owl:ObjectProperty']], 1000)
+          ac_rest_manager.sparqlQuery("select", queryOWL, (quads) => {
+            if (quads) {
+              var dataAction = {
+                type: 'CONCAT_ONTOLOGY_PROPERTIES',
+                ontology_properties: convertToAutoCompleteRDF(quads)
+              }
 
-          store.dispatch(dataAction)
+              store.dispatch(dataAction)
+            }
+          })
         }
       })
     }
   }, [])
 
-  function triplesToQueryConditions(variable) {
-    var triples = edittingGraph.triples.filter(triple => triple.subject.value === variable)
+  function triplesToQueryConditions() {
+    //var triples = edittingGraph.triples.filter(triple => triple.subject.value === variable || triple.object.value === variable)
     var conditions = []
-    triples.map((titem, tindex) => {
-      conditions.push([titem.subject.value, titem.ontology + ':' + titem.predicate.value, titem.object.value])
+    edittingGraph.triples.map((titem, tindex) => {
+      conditions.push([displayObjectText(titem.subject), displayObjectText(titem.predicate), displayObjectText(titem.object)])
     })
     return conditions
   }
@@ -146,27 +156,23 @@ export default function EditRuleComponent(props) {
   const handleAddPredicate = (event, index) => {
     var subjectString = inputSubjectRef.current.value
     if(subjectString !== "") {
-      var parts = subjectString.split(':')
-      var subject = parts.length > 1 ? parts[1] : subjectString
-      let constraints = triplesToQueryConditions(subject, '?p')
+      let constraints = triplesToQueryConditions()
 
       //default
       if(constraints.length === 0) {
-        predicateSuggestionList = store.getState().ontology_properties
+        setPredicateSuggestionList(store.getState().ontology_properties)
       }
       else {
-        // const currentCondition = [subject, ]
-        // const query = selectQueryBuilder(edittingGraph.prefixes,
-        //                                  ['?s'],
-        //                                  constraints,
-        //                                  1000)
-        //
-        // ac_rest_manager.sparqlQuery("select", query, (quads) => {
-        //   predicateSuggestionList = convertToAutoCompleteRDF(quads)
-        //   setDisableEditPred(false)
-        // })
+        const query = selectQueryBuilder(ONTOLOGY.ontologyList,
+                                         ['?sai'],
+                                         constraints,
+                                         1000)
+        console.log("pred query", query)
+        ac_rest_manager.sparqlQuery("select", query, (quads) => {
+          setPredicateSuggestionList(convertToAutoCompleteRDF(quads))
+          setDisableEditPred(false)
+        })
       }
-
       setDisableEditPred(false)
     }
   }
@@ -175,24 +181,30 @@ export default function EditRuleComponent(props) {
     var subjectString = inputSubjectRef.current.value
     var predicate = inputPredicateRef.current.value
     if(subjectString !== "") {
-      var parts = subjectString.split(':')
-      var subject = parts.length > 1 ? parts[1] : subjectString
-      var subjectVar = parts.length > 1 ? parts[1] : ('?' + subjectString)
-      let constraints = triplesToQueryConditions(subject)
+      let constraints = triplesToQueryConditions(subjectString)
       // if(constraints.length === 0) {
       //   objectSuggestionList = store.getState().ontology_classes
       //   setDisableEditPred(false)
       // }
       // else {
-      const currentCondition = [subjectVar, predicate, '?s']
+      const currentCondition = [subjectString, predicate, '?sai']
       constraints.push(currentCondition)
-      const query = selectQueryBuilder(ONTOLOGY.ontologyList,
-                                       ['?s'],
+      const query = selectQueryBuilder([ONTOLOGY.ontologyConstants.SAI],
+                                       ['?sai'],
                                        constraints,
                                        1000)
 
+      console.log("object query", query)
+
       ac_rest_manager.sparqlQuery("select", query, (quads) => {
-        objectSuggestionList = convertToAutoCompleteRDF(quads)
+        console.log("returned quads", quads)
+        let objList = quads.filter((thing, index, self) =>
+          index === self.findIndex((t) => (
+            t['?sai'].value === thing['?sai'].value
+          ))
+        )
+        console.log("filtered quads", objList)
+        setObjectSuggestionList(convertToAutoCompleteRDF(objList))
         setDisableEditObj(false)
       })
       // }
@@ -235,7 +247,8 @@ export default function EditRuleComponent(props) {
 
     function addToVariablesList(v) {
       if (v.isVar !== undefined && v.isVar) {
-        if (variablesList.indexOf(v) === -1) {
+        console.log("add sht", variablesList, v, variablesList.indexOf(v))
+        if (variablesList.findIndex(i => i.value === v.value) === -1) {
           variablesList.push(v)
         }
       }
@@ -249,8 +262,8 @@ export default function EditRuleComponent(props) {
     return false
   }
 
-  const handleAddActionClick = (event, index) => {
-
+  const handleAddActionClick = (event, action) => {
+    setOpenActionDialog(true)
   }
 
   const handleOKClick = (event, index) => {
@@ -261,6 +274,13 @@ export default function EditRuleComponent(props) {
     callback(false)
   }
 
+  const updateActionClick = (cancel, index) => {
+    setOpenActionDialog(false)
+  }
+
+  const onDeleteTriple = (index) => {
+    //edittingGraph.triples.splice(index, 1)
+  }
 
   return (
     <div>
@@ -300,36 +320,18 @@ export default function EditRuleComponent(props) {
     <Grid container className={classes.root} spacing={2}>
       {/*------------------ Left ------------------ */}
       <Grid key="list" className={classes.list} item>
-        <Table className={classes.table} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Subject</TableCell>
-              <TableCell>Predicate</TableCell>
-              <TableCell>Object</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {edittingGraph.triples.map((titem, tindex) => (
-              <TableRow key={tindex}>
-                <TableCell component="th" scope="row">
-                  {titem.subject.value}
-                </TableCell>
-                <TableCell>{titem.predicate.value}</TableCell>
-                <TableCell>{titem.object.value}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+        <RdfTriplesTable rdfTriples={edittingGraph.triples} isEditting={true} deleteCallback={onDeleteTriple}/>
       </Grid>
       {/*------------------ Right ------------------ */}
       <Grid key="graph" className={classes.graph} item >
         <Grid container alignItems='center' className={classes.editTriple} spacing={0}>
           <Grid item xs={3} className={classes.autoComplete}>
+            {/*------------------ subject ------------------ */}
             <Autocomplete
               freeSolo
               id="ontology-suggestion-subject"
-              options={store.getState().ontology_classes.concat(variablesList)}
-              getOptionLabel={(c) => c.displayedName !== undefined? c.displayedName : c }
+              options={subjectSuggestionList.concat(variablesList)}
+              getOptionLabel={(c) => c.displayedName !== undefined? c.displayedName : c.value }
               renderInput={(params) => <TextField required inputRef={inputSubjectRef}
                                                   {...params} label="Variable" variant="outlined" />}
             />
@@ -339,11 +341,12 @@ export default function EditRuleComponent(props) {
                 <ArrowRightAltIcon />
               </IconButton >
             </Grid>
+            {/*------------------ Predicate ------------------ */}
             <Grid item xs={3} className={classes.autoComplete}>
               <Autocomplete
                 disabled={disableEditPred}
                 id="ontology-suggestion-predicate"
-                options={store.getState().ontology_properties}
+                options={predicateSuggestionList}
                 getOptionLabel={(c) => c.displayedName}
                 onChange={(e, v) => setDisableEditObj(true)}
                 renderInput={(params) => <TextField required inputRef={inputPredicateRef}
@@ -355,13 +358,14 @@ export default function EditRuleComponent(props) {
                 <ArrowRightAltIcon />
               </IconButton >
             </Grid>
+            {/*------------------ Object ------------------ */}
             <Grid item xs={3} className={classes.autoComplete}>
               <Autocomplete
                 freeSolo
                 disabled={disableEditObj}
                 id="ontology-suggestion-object"
-                options={store.getState().ontology_classes}
-                getOptionLabel={(c) => c.displayedName !== undefined? c.displayedName : c}
+                options={objectSuggestionList.concat(variablesList)}
+                getOptionLabel={(c) => c.displayedName !== undefined? c.displayedName : c.value}
                 renderInput={(params) => <TextField required inputRef={inputObjectRef}
                                                     {...params} label="Object" variant="outlined" />}
               />
@@ -376,6 +380,7 @@ export default function EditRuleComponent(props) {
       </Grid>
     </Grid>
     {/*------------------ Action Dialog ------------------ */}
+    <EditAction openActionDialog={openActionDialog} onCloseCallback={updateActionClick} variablesList={variablesList}/>
     </div>
   )
 }

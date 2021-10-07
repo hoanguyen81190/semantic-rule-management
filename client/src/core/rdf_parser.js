@@ -13,7 +13,7 @@ import * as ActionModel from "./actionModel"
 
 const ttl_read = require('@graphy/content.ttl.read')
 
-const DEFAULT_ONTOLOGY = "auto"
+const DEFAULT_ONTOLOGY = "sai"
 const JENA_ONTOLOGY = "jena"
 
 export function getRuleResponseParser(response) {
@@ -230,7 +230,7 @@ export function parseObject(objStr) {
     var variableParts = objStr.split('?')
     if (variableParts.length > 1) { //is a variable
       return {
-        value: variableParts[1],
+        value: objStr,
         isVar: true
       }
     }
@@ -244,7 +244,6 @@ export function parseObject(objStr) {
 //-------------------------GRAPH--------------------------
 function parseURLName(urlObj) {
   var parts = urlObj.value.split('#')
-
   return {
     value: parts[1],
     ontology: ONTOLOGY.ontologyLookUp.get(parts[0])
@@ -317,25 +316,25 @@ export function triplesToGraph(inputTriples){
 export function convertToAutoCompleteRDF(quads) {
   var results = []
   quads.map((qitem, qindex) => {
-    var parts = qitem['?s'].value.split('#')
-    results.push({
-      name: parts[1],
-      ontology: ONTOLOGY.ontologyLookUp.get(parts[0]),
-      displayedName: ONTOLOGY.ontologyLookUp.get(parts[0]) + ':' + parts[1]
-    })
+    var parts = qitem['?sai'].value.split('#')
+    if(ONTOLOGY.ontologyLookUp.get(parts[0]) === undefined) {
+
+    }
+    else {
+      results.push({
+        name: parts[1],
+        ontology: ONTOLOGY.ontologyLookUp.get(parts[0]),
+        displayedName: ONTOLOGY.ontologyLookUp.get(parts[0]) + ':' + parts[1]
+      })
+    }
   })
   return results
 }
 
 //display
 export function displayObjectText(obj) {
-  if (obj.isVar) {
-    return '?' + obj.value
-  }
-  else if (obj.ontology !== undefined) {
+  if (obj.ontology !== undefined) {
     return obj.ontology + ':' + obj.value
   }
-  else {
-    return obj.value
-  }
+  return obj.value
 }

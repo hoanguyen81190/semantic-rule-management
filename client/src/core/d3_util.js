@@ -15,7 +15,7 @@ function objColor(obj) {
 
 	if (obj.ontology !== undefined) {
 		if (obj.ontology === '') {
-			color = ONTOLOGY.ontologyConstants.AUTO.colorCode
+			color = ONTOLOGY.ontologyConstants.SAI.colorCode
 		}
 		else {
 			color = ONTOLOGY.ontologyConstants[obj.ontology.toUpperCase()].colorCode

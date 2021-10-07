@@ -2,8 +2,7 @@ const newEngine = require('@comunica/actor-init-sparql-file').newEngine;
 const myEngine = newEngine();
 
 const config = { sources: ['C:/workingFolder2021/PhD/semantic-rule-management/server/system/ontology/SAI.ttl',
-                           'C:/workingFolder2021/PhD/semantic-rule-management/server/system/ontology/rdf.ttl',
-                           'C:/workingFolder2021/PhD/semantic-rule-management/server/system/ontology/owl.ttl'] }
+                           'C:/workingFolder2021/PhD/semantic-rule-management/server/system/ontology/rdf.ttl'] }
 
 /**
 const query = `
@@ -16,14 +15,14 @@ SELECT ?s WHERE {
 `
 */
 
-export async function sparqlSelectQuery(query) {
-  const bindingsStream = await myEngine.query(query, config)
-  const results = await bindingsStream.bindings()
-
-  return results
+export async function sparqlSelectQuery(query, callback) {
+  const { bindingsStream } = await myEngine.query(query, config)
+  var results = []
+  bindingsStream.on('data', (data) => results.push(data))
+  bindingsStream.on('end', () => callback(results))
 }
 
-export async function sparqlConstructQuery(query) {
+export async function sparqlConstructQuery(query, callback) {
   const quadsStream = await myEngine.query(query, config)
   const results = await quadsStream.quads()
 

@@ -11,6 +11,7 @@ import Paper from '@material-ui/core/Paper'
 import Typography from '@material-ui/core/Typography'
 
 import RDFGraph from '../../components/Rule/RDFGraph'
+import RdfTriplesTable from './RdfTriplesTable'
 
 import { displayObjectText } from '../../core/rdf_parser'
 
@@ -58,26 +59,7 @@ export default function RuleComponent(props) {
     </Table>
     <Grid container className={classes.root} spacing={2}>
       <Grid key="list" className={classes.list} item>
-        <Table className={classes.table} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Subject</TableCell>
-              <TableCell>Predicate</TableCell>
-              <TableCell>Object</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {jenaRules.statement.body.map((titem, tindex) => (
-              <TableRow key={tindex}>
-                <TableCell component="th" scope="row">
-                  {displayObjectText(titem.subject)}
-                </TableCell>
-                <TableCell >{displayObjectText(titem.predicate)}</TableCell>
-                <TableCell >{displayObjectText(titem.object)}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+        <RdfTriplesTable rdfTriples={jenaRules.statement.body} isEditting={false}/>
       </Grid>
       <Grid key="graph" className={classes.graph} item>
         <RDFGraph rdfTriples={jenaRules.statement.body} isEditable={false}/>
