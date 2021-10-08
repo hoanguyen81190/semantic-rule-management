@@ -1,18 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'
 import { Redirect, Route, Switch } from 'react-router-dom'
 
-import { makeStyles } from '@material-ui/core/styles';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import ListItemText from '@material-ui/core/ListItemText';
-import Avatar from '@material-ui/core/Avatar';
-import FolderIcon from '@material-ui/icons/Folder';
-import DeleteIcon from '@material-ui/icons/Delete';
-import IconButton from '@material-ui/core/IconButton';
-import { Typography } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles'
+import List from '@material-ui/core/List'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemAvatar from '@material-ui/core/ListItemAvatar'
+import ListItemIcon from '@material-ui/core/ListItemIcon'
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
+import ListItemText from '@material-ui/core/ListItemText'
+import Avatar from '@material-ui/core/Avatar'
+import FolderIcon from '@material-ui/icons/Folder'
+import DeleteIcon from '@material-ui/icons/Delete'
+import IconButton from '@material-ui/core/IconButton'
+import { Typography } from '@material-ui/core'
 import withStyles from '@material-ui/core/styles/withStyles'
 
 import Sidebar from '../Sidebar/Sidebar'
@@ -22,10 +22,10 @@ import image from '../../assets/img/sidebar-ah-2.png'
 import logo from '../../assets/img/arrowhead_logo_white.png'
 import dashboardStyle from '../../assets/jss/material-dashboard-react/layouts/dashboardStyle'
 
-import store from '../../core/store';
-import ac_rest_manager from '../../core/ac_rest_manager.js';
+import store from '../../core/store'
+import ac_rest_manager from '../../core/ac_rest_manager.js'
 
-import './Dashboard.css';
+import './Dashboard.css'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
   title: {
     margin: theme.spacing(4, 0, 2),
   },
-}));
+}))
 
 const switchRoutes = (
   <Switch>
@@ -83,11 +83,11 @@ const Dashboard = (props) => {
       />
       <div className={classes.mainPanel}>
         <div >{switchRoutes}</div>
-      </div>;
+      </div>
     </div>
-    return( content );
+    return( content )
 }
 
 
 
-export default withStyles(dashboardStyle)(Dashboard);
+export default withStyles(dashboardStyle)(Dashboard)

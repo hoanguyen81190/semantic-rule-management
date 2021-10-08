@@ -53,7 +53,7 @@ export default function RuleComponent(props) {
     <Table className={classes.table} aria-label="simple table">
       <TableBody>
         {jenaRules.statement.head.map((titem, tindex) => (
-          titem.getDisplayComponent(tindex)
+          titem.getDisplayComponent(tindex, null)
         ))}
       </TableBody>
     </Table>

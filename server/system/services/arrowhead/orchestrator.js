@@ -74,13 +74,13 @@ export async function orchestration (serviceRequestForm, path, callback) {
   })
 }
 
-export async function consumeServiceHTTP(orchestration_res, callback) {
+export async function consumeServiceHTTP(orchestration_res, payload, callback) {
   var http_method = orchestration_res.metadata['http-method'].toLowerCase()
-  console.log("HTTP METHOD", http_method)
+
   var path = getHttpPath(orchestration_res.provider.address,
                           orchestration_res.provider.port,
                           orchestration_res.serviceUri)
-    networkService[http_method](path)
+    networkService({ method: http_method, url: path, data: payload })
       .then(response => {
         if(response.status === 200) {
           console.log("consuming successfully ")

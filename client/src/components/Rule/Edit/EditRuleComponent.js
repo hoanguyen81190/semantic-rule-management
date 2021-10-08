@@ -27,7 +27,7 @@ import RDFGraph from '../RDFGraph'
 import RdfTriplesTable from '../RdfTriplesTable'
 import ac_rest_manager from '../../../core/ac_rest_manager'
 import { constructQueryBuilder, selectQueryBuilder, common_queries } from '../../../core/comunica'
-import { convertToAutoCompleteRDF, parseObject, displayObjectText } from '../../../core/rdf_parser'
+import { convertToAutoCompleteRDF, parseObject, displayObjectText, buildJenaRuleRequest } from '../../../core/rdf_parser'
 import store from '../../../core/store'
 import ONTOLOGY from "../../../core/ontologyConstants"
 import './EditFact.css'
@@ -72,26 +72,29 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 export default function EditRuleComponent(props) {
-  const { callback } = props
+  const { callback, currentRules, consumerSystems } = props
   const classes = useStyles()
 
   const inputSubjectRef = React.useRef(null)
   const inputPredicateRef = React.useRef(null)
   const inputObjectRef = React.useRef(null)
 
+  const editSystemNameRef = React.useRef(null)
+  const editRuleNameRef = React.useRef(null)
+
   const [ spacing, setSpacing ] = React.useState(2)
 
   //rule information
-  const [ editSystemName, setEditSystemName ] = React.useState('')
-  const [ editRuleName, setEditRuleName ] = React.useState('')
+  // const [ editSystemName, setEditSystemName ] = React.useState('')
+  // const [ editRuleName, setEditRuleName ] = React.useState('')
   const [ editActionList, setEditActionList ] = React.useState([])
   const [ edittingGraph, setEdittingGraph ] = React.useState({prefixes: [], triples: []})
 
   const [ openActionDialog, setOpenActionDialog ] = React.useState(false)
 
   //visualization
-  const [ disableEditPred, setDisableEditPred ] = React.useState(true)
-  const [ disableEditObj, setDisableEditObj ] = React.useState(true)
+  const [ disableEditPred, setDisableEditPred ] = React.useState(false)
+  const [ disableEditObj, setDisableEditObj ] = React.useState(false)
   const [ variablesList, setVariablesList ] = React.useState([])
   const [ rerender, setRerender ] = React.useState(0)
 
@@ -99,13 +102,18 @@ export default function EditRuleComponent(props) {
   const [ predicateSuggestionList, setPredicateSuggestionList ] = React.useState([])
   const [ objectSuggestionList, setObjectSuggestionList ] = React.useState([])
 
+  const [ errorMessage, setErrorMessage ] = React.useState('')
+
   useEffect(() => {
     if(store.getState().ontology_classes.length === 0) {
-      console.log("subject query", common_queries.get_all_classes)
       ac_rest_manager.sparqlQuery("select", common_queries.get_all_classes, (quads) => {
-        console.log("returned value", quads)
         if (quads) {
-          var data = convertToAutoCompleteRDF(quads)
+          let objList = quads.filter((thing, index, self) =>
+            index === self.findIndex((t) => (
+              t['?sai'].value === thing['?sai'].value
+            ))
+          )
+          var data = convertToAutoCompleteRDF(objList)
           var dataAction = {
             type: 'ALL_ONTOLOGY_CLASSES',
             ontology_classes: data
@@ -113,33 +121,51 @@ export default function EditRuleComponent(props) {
 
           store.dispatch(dataAction)
           setSubjectSuggestionList(data)
+          setObjectSuggestionList(data)
         }
       })
     }
 
     if(store.getState().ontology_properties.length <= 4) {
-      const queryRDF = selectQueryBuilder([ONTOLOGY.ontologyConstants.RDF], ['?sai'], [['?sai', '?pai', 'rdf:Property']], 1000)
+      const queryRDF = common_queries.get_all_properties
       ac_rest_manager.sparqlQuery("select", queryRDF, (quads) => {
         if (quads) {
+          let objList = quads.filter((thing, index, self) =>
+            index === self.findIndex((t) => (
+              t['?sai'].value === thing['?sai'].value
+            ))
+          )
+          var data = convertToAutoCompleteRDF(objList)
           var dataAction = {
             type: 'ALL_ONTOLOGY_PROPERTIES',
             ontology_properties: convertToAutoCompleteRDF(quads)
           }
 
           store.dispatch(dataAction)
-
-          const queryOWL = selectQueryBuilder([ONTOLOGY.ontologyConstants.SAI], ['?sai'], [['?sai', '?pai', 'owl:ObjectProperty']], 1000)
-          ac_rest_manager.sparqlQuery("select", queryOWL, (quads) => {
-            if (quads) {
-              var dataAction = {
-                type: 'CONCAT_ONTOLOGY_PROPERTIES',
-                ontology_properties: convertToAutoCompleteRDF(quads)
-              }
-
-              store.dispatch(dataAction)
-            }
-          })
+          setPredicateSuggestionList(store.getState().ontology_properties)
         }
+      // const queryRDF = selectQueryBuilder([ONTOLOGY.ontologyConstants.RDF], ['?sai'], [['?sai', '?pai', 'rdf:Property']], 1000)
+      // ac_rest_manager.sparqlQuery("select", queryRDF, (quads) => {
+      //   if (quads) {
+      //     var dataAction = {
+      //       type: 'ALL_ONTOLOGY_PROPERTIES',
+      //       ontology_properties: convertToAutoCompleteRDF(quads)
+      //     }
+      //
+      //     store.dispatch(dataAction)
+      //
+      //     const queryOWL = selectQueryBuilder([ONTOLOGY.ontologyConstants.SAI], ['?sai'], [['?sai', '?pai', 'owl:ObjectProperty']], 1000)
+      //     ac_rest_manager.sparqlQuery("select", queryOWL, (quads) => {
+      //       if (quads) {
+      //         var dataAction = {
+      //           type: 'CONCAT_ONTOLOGY_PROPERTIES',
+      //           ontology_properties: convertToAutoCompleteRDF(quads)
+      //         }
+      //
+      //         store.dispatch(dataAction)
+      //       }
+      //     })
+      //   }
       })
     }
   }, [])
@@ -154,61 +180,61 @@ export default function EditRuleComponent(props) {
   }
 
   const handleAddPredicate = (event, index) => {
-    var subjectString = inputSubjectRef.current.value
-    if(subjectString !== "") {
-      let constraints = triplesToQueryConditions()
-
-      //default
-      if(constraints.length === 0) {
-        setPredicateSuggestionList(store.getState().ontology_properties)
-      }
-      else {
-        const query = selectQueryBuilder(ONTOLOGY.ontologyList,
-                                         ['?sai'],
-                                         constraints,
-                                         1000)
-        console.log("pred query", query)
-        ac_rest_manager.sparqlQuery("select", query, (quads) => {
-          setPredicateSuggestionList(convertToAutoCompleteRDF(quads))
-          setDisableEditPred(false)
-        })
-      }
-      setDisableEditPred(false)
-    }
+    // var subjectString = inputSubjectRef.current.value
+    // if(subjectString !== "") {
+    //   let constraints = triplesToQueryConditions()
+    //
+    //   //default
+    //   if(constraints.length === 0) {
+    //     setPredicateSuggestionList(store.getState().ontology_properties)
+    //   }
+    //   else {
+    //     const query = selectQueryBuilder(ONTOLOGY.ontologyList,
+    //                                      ['?sai'],
+    //                                      constraints,
+    //                                      1000)
+    //     console.log("pred query", query)
+    //     ac_rest_manager.sparqlQuery("select", query, (quads) => {
+    //       setPredicateSuggestionList(convertToAutoCompleteRDF(quads))
+    //       setDisableEditPred(false)
+    //     })
+    //   }
+    //   setDisableEditPred(false)
+    // }
   }
 
   const handleAddObject = (event, index) => {
-    var subjectString = inputSubjectRef.current.value
-    var predicate = inputPredicateRef.current.value
-    if(subjectString !== "") {
-      let constraints = triplesToQueryConditions(subjectString)
-      // if(constraints.length === 0) {
-      //   objectSuggestionList = store.getState().ontology_classes
-      //   setDisableEditPred(false)
+    // var subjectString = inputSubjectRef.current.value
+    // var predicate = inputPredicateRef.current.value
+    // if(subjectString !== "") {
+    //   let constraints = triplesToQueryConditions(subjectString)
+    //   // if(constraints.length === 0) {
+    //   //   objectSuggestionList = store.getState().ontology_classes
+    //   //   setDisableEditPred(false)
+    //   // }
+    //   // else {
+    //   const currentCondition = [subjectString, predicate, '?sai']
+    //   constraints.push(currentCondition)
+    //   const query = selectQueryBuilder([ONTOLOGY.ontologyConstants.SAI],
+    //                                    ['?sai'],
+    //                                    constraints,
+    //                                    1000)
+    //
+    //   console.log("object query", query)
+    //
+    //   ac_rest_manager.sparqlQuery("select", query, (quads) => {
+    //     console.log("returned quads", quads)
+    //     let objList = quads.filter((thing, index, self) =>
+    //       index === self.findIndex((t) => (
+    //         t['?sai'].value === thing['?sai'].value
+    //       ))
+    //     )
+    //     console.log("filtered quads", objList)
+    //     setObjectSuggestionList(convertToAutoCompleteRDF(objList))
+    //     setDisableEditObj(false)
+    //   })
       // }
-      // else {
-      const currentCondition = [subjectString, predicate, '?sai']
-      constraints.push(currentCondition)
-      const query = selectQueryBuilder([ONTOLOGY.ontologyConstants.SAI],
-                                       ['?sai'],
-                                       constraints,
-                                       1000)
-
-      console.log("object query", query)
-
-      ac_rest_manager.sparqlQuery("select", query, (quads) => {
-        console.log("returned quads", quads)
-        let objList = quads.filter((thing, index, self) =>
-          index === self.findIndex((t) => (
-            t['?sai'].value === thing['?sai'].value
-          ))
-        )
-        console.log("filtered quads", objList)
-        setObjectSuggestionList(convertToAutoCompleteRDF(objList))
-        setDisableEditObj(false)
-      })
-      // }
-    }
+    // }
   }
 
   const handleAddNewTriple = (event, index) => {
@@ -231,8 +257,8 @@ export default function EditRuleComponent(props) {
       var newObject = new RDFTriple(sub, pred, obj)
       edittingGraph.triples.push(newObject)
       setEdittingGraph({...edittingGraph})
-      setDisableEditPred(true)
-      setDisableEditObj(true)
+      // setDisableEditPred(true)
+      // setDisableEditObj(true)
       setRerender(rerender + 1)
     }
 
@@ -247,7 +273,6 @@ export default function EditRuleComponent(props) {
 
     function addToVariablesList(v) {
       if (v.isVar !== undefined && v.isVar) {
-        console.log("add sht", variablesList, v, variablesList.indexOf(v))
         if (variablesList.findIndex(i => i.value === v.value) === -1) {
           variablesList.push(v)
         }
@@ -267,30 +292,81 @@ export default function EditRuleComponent(props) {
   }
 
   const handleOKClick = (event, index) => {
-    callback(true)
+    //checking if new rule is valid
+    //consumer Name
+    if (editSystemNameRef.current.value === '') {
+      setErrorMessage('Consumer System Name can not be empty')
+    }
+    else if (editRuleNameRef.current.value === '') {
+      setErrorMessage('Rule Name can not be empty')
+    }
+    else if (editActionList.length <= 0) {
+      setErrorMessage('Action list can not be empty')
+    }
+    else if (edittingGraph.triples.length <= 0) {
+      setErrorMessage('Statement can not be empty')
+    }
+    else {
+      var duplicatedName = currentRules.findIndex((t) => (
+        (t.systemName === editSystemNameRef.current.value) &&
+          (t.name === editRuleNameRef.current.value)
+      ))
+      if (duplicatedName === -1) {
+        setErrorMessage('Duplicated Rule ' + editRuleNameRef.current.value + 'for system ' + editSystemNameRef.current.value)
+      }
+      else {
+        var jenaRule = buildJenaRuleRequest(edittingGraph.prefixes, editSystemNameRef.current.value,
+                          editRuleNameRef.current.value, edittingGraph.triples, editActionList)
+        console.log("FINAL FANTASY", jenaRule)
+        callback(jenaRule)
+      }
+    }
   }
 
   const handleCancelClick = (event, iindex) => {
-    callback(false)
+    callback(null)
   }
 
-  const updateActionClick = (cancel, index) => {
+  /*Handle acc new action*/
+  const updateActionClick = (ok, newAction) => {
+    if (ok) {
+      editActionList.push(newAction)
+      setRerender(rerender + 1)
+    }
     setOpenActionDialog(false)
   }
 
-  const onDeleteTriple = (index) => {
-    //edittingGraph.triples.splice(index, 1)
+  /*Handle delete triple*/
+  const onDeleteTriple = (delete_index) => {
+    edittingGraph.triples.splice(delete_index, 1)
+    setRerender(rerender + 1)
+  }
+
+  const onDeleteAction = (delete_index) => {
+    editActionList.splice(delete_index, 1)
+    setRerender(rerender + 1)
   }
 
   return (
     <div>
     {/*------------------- Modify information of the rule ------------------- */}
+    <Typography color='error'>
+      {errorMessage}
+    </Typography>
     <Grid container className={classes.name} spacing={2} alignItems='center'>
       <Grid item xs={4} className={classes.textField}>
-        <TextField id="standard-full-width" variant="outlined" fullWidth label="System Name" />
+        <Autocomplete
+          freeSolo
+          id="system-suggestion"
+          options={consumerSystems}
+          getOptionLabel={(c) => c}
+          renderInput={(params) => <TextField id="standard-full-width" variant="outlined" fullWidth label="System Name"
+                                              inputRef={editSystemNameRef} {...params}  />}
+        />
       </Grid>
       <Grid item xs={4} className={classes.textField}>
-        <TextField id="standard-full-width" variant="outlined" fullWidth label="Rule Name" />
+        <TextField id="standard-full-width" variant="outlined" fullWidth label="Rule Name"
+                    inputRef={editRuleNameRef}/>
       </Grid>
       <Grid item className={classes.button}>
         <Button variant="contained" onClick={handleAddActionClick}>
@@ -312,7 +388,7 @@ export default function EditRuleComponent(props) {
     <Table className={classes.table} aria-label="simple table">
       <TableBody>
         {editActionList.map((titem, tindex) => (
-          titem.getDisplayComponent(tindex)
+          titem.getDisplayComponent(tindex, {deleteCallback: onDeleteAction})
         ))}
       </TableBody>
     </Table>
@@ -331,7 +407,7 @@ export default function EditRuleComponent(props) {
               freeSolo
               id="ontology-suggestion-subject"
               options={subjectSuggestionList.concat(variablesList)}
-              getOptionLabel={(c) => c.displayedName !== undefined? c.displayedName : c.value }
+              getOptionLabel={(c) => c.displayedName !== undefined? c.displayedName : c.value || c}
               renderInput={(params) => <TextField required inputRef={inputSubjectRef}
                                                   {...params} label="Variable" variant="outlined" />}
             />
@@ -348,7 +424,7 @@ export default function EditRuleComponent(props) {
                 id="ontology-suggestion-predicate"
                 options={predicateSuggestionList}
                 getOptionLabel={(c) => c.displayedName}
-                onChange={(e, v) => setDisableEditObj(true)}
+                /*onChange={(e, v) => setDisableEditObj(true)}*/
                 renderInput={(params) => <TextField required inputRef={inputPredicateRef}
                                                     {...params} label="Predicate" variant="outlined" />}
               />
@@ -365,13 +441,13 @@ export default function EditRuleComponent(props) {
                 disabled={disableEditObj}
                 id="ontology-suggestion-object"
                 options={objectSuggestionList.concat(variablesList)}
-                getOptionLabel={(c) => c.displayedName !== undefined? c.displayedName : c.value}
+                getOptionLabel={(c) => c.displayedName !== undefined? c.displayedName : c.value || c}
                 renderInput={(params) => <TextField required inputRef={inputObjectRef}
                                                     {...params} label="Object" variant="outlined" />}
               />
             </Grid>
             <Grid item className={classes.arrowButton}>
-              <IconButton onClick={handleAddNewTriple}>
+              <IconButton key="add-triple-button" onClick={handleAddNewTriple}>
                 <AddIcon />
               </IconButton >
             </Grid>

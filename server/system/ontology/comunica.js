@@ -1,7 +1,8 @@
 const newEngine = require('@comunica/actor-init-sparql-file').newEngine;
 const myEngine = newEngine();
 
-const config = { sources: ['C:/workingFolder2021/PhD/semantic-rule-management/server/system/ontology/SAI.ttl',
+const config = { sources: ['C:/workingFolder2021/PhD/semantic-rule-management/server/system/ontology/AutoIoT.ttl',
+                           'C:/workingFolder2021/PhD/semantic-rule-management/server/system/ontology/SAI.ttl',
                            'C:/workingFolder2021/PhD/semantic-rule-management/server/system/ontology/rdf.ttl'] }
 
 /**

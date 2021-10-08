@@ -13,12 +13,16 @@ import * as ActionModel from "./actionModel"
 
 const ttl_read = require('@graphy/content.ttl.read')
 
-const DEFAULT_ONTOLOGY = "sai"
+const DEFAULT_ONTOLOGY = "base"
 const JENA_ONTOLOGY = "jena"
 
 export function getRuleResponseParser(response) {
+  var systems = []
   var output = []
   response.map((ritem, rindex) => {
+    if (systems.indexOf(ritem.systemName) === -1) {
+      systems.push(ritem.systemName)
+    }
     ritem.rules.map((jritem, jrindex) => {
       output.push({
         systemName: ritem.systemName,
@@ -27,7 +31,10 @@ export function getRuleResponseParser(response) {
     })
   })
 
-  return output
+  return {
+    rules: output,
+    systems: systems
+  }
 }
 
 //-----------------------------------------------------------
@@ -116,7 +123,6 @@ function parseStatement(statementString) {
 }
 
 function parseActions(actionString) {
-  actionString = actionString.replace(/ /g, '')
   actionString = actionString.replace(/\"/g, '')
 
   var actions = []
@@ -144,7 +150,10 @@ function parseActions(actionString) {
 function parseSubstituteAction(actionString) {
   let openChar = actionString.indexOf('(')
   actionString = actionString.substr(openChar + 1)
-  let parts = actionString.split(',')
+  var parts = actionString.split(',')
+  if (parts.length < 5) {
+    parts = actionString.split(' ')
+  }
   return new ActionModel.SubstituteActionModel(
     parseObject(parts[0]),
     parseObject(parts[1]),
@@ -158,6 +167,9 @@ function parseConfigureAction(actionString) {
   let openChar = actionString.indexOf('(')
   actionString = actionString.substr(openChar + 1)
   let parts = actionString.split(',')
+  if (parts.length < 3) {
+    parts = actionString.split(' ')
+  }
   return new ActionModel.ConfigureActionModel(
     parseObject(parts[0]),
     parseObject(parts[1]),
@@ -188,8 +200,10 @@ function parseRDFTriples(inputString) {
   var rdfNormal = rdfString.indexOf('(')
 
   if (rdfNormal > 0) {
-
-    let comma = rdfString.indexOf(' ')
+    var comma = rdfString.indexOf(',')
+    if (comma < 0) {
+      comma = rdfString.indexOf(' ')
+    }
     let func = rdfString.substr(0, rdfNormal)
     let predicate = {
       value: rdfString.substr(0, rdfNormal),
@@ -218,6 +232,7 @@ function parseRDFTriples(inputString) {
 }
 
 export function parseObject(objStr) {
+  objStr = objStr.replace(/ /g, '')
   objStr = objStr.replace(/\'/g, '')
   var ontologyParts = objStr.split(':')
   if (ontologyParts.length > 1) {//belongs to an ontology
@@ -337,4 +352,53 @@ export function displayObjectText(obj) {
     return obj.ontology + ':' + obj.value
   }
   return obj.value
+}
+
+/*-----------------------------------------------------------*/
+export function buildObjectString(obj) {
+  if (obj.ontology !== undefined) {
+    var ontologyObj = ONTOLOGY.ontologyConstants[obj.ontology.toUpperCase()]
+    return '<' + ontologyObj.url + obj.value + '>'
+  }
+  return obj.value
+}
+function buildPrefixes(prefixes) {
+  var prefixesOutput = {}
+  prefixes.map((pitem, pindex) => {
+    prefixesOutput[pitem.name] = pitem.url
+  })
+  return prefixesOutput
+}
+
+function buildRdfTriple(triple) {
+  if (triple.predicate.ontology === 'jena') {
+    return triple.predicate.value + '(' + triple.subject.value + ' ' + triple.object.value + ')'
+  }
+  return '(' + buildObjectString(triple.subject) + ' '
+             + buildObjectString(triple.predicate)
+             + ' ' + buildObjectString(triple.object) + ')'
+}
+function buildAction(actions) {
+  var actionStrings = []
+  actions.map((aitem, aindex) => {
+    actionStrings.push(aitem.getString())
+  })
+  return actionStrings.join(' ')
+}
+function buildStatement(statement) {
+  var statementString = []
+  statement.map((sitem, sindex) => {
+    statementString.push(buildRdfTriple(sitem))
+  })
+  return statementString.join(' ')
+}
+function buildRule(ruleName, statement, actions) {
+  return '[' + ruleName + ': ' + buildStatement(statement) + ' -> ' + buildAction(actions) + ']'
+}
+export function buildJenaRuleRequest(prefixes, consumerName, ruleName, statement, actions) {
+  return {
+    systemName: consumerName,
+    rules: [buildRule(ruleName, statement, actions)],
+    prefixes: buildPrefixes(prefixes)
+  }
 }

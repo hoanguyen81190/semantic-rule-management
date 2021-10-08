@@ -1,14 +1,14 @@
-import * as colors from '@material-ui/core/colors';
+import * as colors from '@material-ui/core/colors'
 
 const ontologyConstants = {
-  // BASE: {
-  //   url: "http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#",
-  //   name: "",
-  //   colorCode: colors.pink[300]
-  // },
+  AUTO: {
+    url: "http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#",
+    name: "",
+    colorCode: colors.blueGrey[500]
+  },
   SAI: {
     url: "https://arrowhead.eu/arrowheadtools/sai#",
-    name: "",
+    name: "sai",
     colorCode: colors.pink[300]
   },
   RDFS: {
@@ -84,10 +84,11 @@ const ontologyConstants = {
   // },
 }
 
-const ontologyList = [ontologyConstants.SAI, ontologyConstants.RDF, ontologyConstants.RDFS,
+const ontologyList = [ontologyConstants.AUTO, ontologyConstants.SAI, ontologyConstants.RDF, ontologyConstants.RDFS,
                       ontologyConstants.SOSA]
 
 const ontologyLookUp = new Map()
+ontologyLookUp.set("http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT", ontologyConstants.AUTO.name)
 ontologyLookUp.set("https://arrowhead.eu/arrowheadtools/sai", ontologyConstants.SAI.name)
 ontologyLookUp.set("http://www.w3.org/ns/sosa", ontologyConstants.SOSA.name)
 ontologyLookUp.set("http://www.w3.org/1999/02/22-rdf-syntax-ns", ontologyConstants.RDF.name)

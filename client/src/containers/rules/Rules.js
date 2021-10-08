@@ -18,10 +18,14 @@ import Collapse from '@material-ui/core/Collapse'
 import AddIcon from '@material-ui/icons/Add'
 import { Typography } from '@material-ui/core'
 import withStyles from '@material-ui/core/styles/withStyles'
+import Button from '@material-ui/core/Button'
 
-import TestComponent from '../../components/Test/TestComponent'
+import Dialog from '@material-ui/core/Dialog'
+import DialogActions from '@material-ui/core/DialogActions'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogContentText from '@material-ui/core/DialogContentText'
+import DialogTitle from '@material-ui/core/DialogTitle'
 
-import NestedList from '../../components/List/NestedList'
 import Prefixes from '../../components/Rule/Prefixes'
 import RuleComponent from '../../components/Rule/RuleComponent'
 import EditRuleComponent from '../../components/Rule/Edit/EditRuleComponent'
@@ -42,50 +46,54 @@ const Rules = (props) => {
   const { classes, ...rest } = props
   const [dense, setDense] = React.useState(false)
   const [secondary, setSecondary] = React.useState(false)
-  const [consumerSystems, setConsumerSystems] = React.useState([])
+
   const [jenaRules, setJenaRules] = React.useState([])
   const [prefixes, setPrefixes] = React.useState([])
 
   const [selectedIndex, setSelectedIndex] = React.useState(-1)
   const [open, setOpen] = React.useState({})
-  const [isAdding, setIsAdding] = React.useState(false)
+
+  var consumerSystems = []
+
   const handleClick = () => {
 
   }
 
+  const [openAlertDialog, setOpenAlertDialog] = React.useState(false)
+  const [message, setMessage] = React.useState('')
+
+  const handleClose = () => {
+    setOpenAlertDialog(false)
+  }
+
   useEffect(() => {
-    fetch(jenaRuleExample)
-      .then(r => r.text())
-      .then(text => {
-         var parseResult = jenaRuleParser(text)
-         setPrefixes(parseResult.prefixes)
-         setJenaRules(parseResult.rules)
-      })
-    // ac_rest_manager.getAllRules((data) => {
-    //   if (data) {
-    //     //console.log("GET ALL RULES", data)
-    //     console.log("GET ALL RULES", data)
-    //     var output = getRuleResponseParser(data)
-    //     console.log("output", output)
-    //     setJenaRules(getRuleResponseParser(data))
-    //   }
-    //
-    // })
+    ac_rest_manager.getAllRules((data) => {
+      if (data) {
+        var output = getRuleResponseParser(data, consumerSystems)
+        consumerSystems = output.systems
+        console.log("GET ALL RULES", output)
+        setJenaRules(output.rules)
+      }
+
+    })
+    // fetch(jenaRuleExample)
+    //   .then(r => r.text())
+    //   .then(text => {
+    //      var parseResult = jenaRuleParser(text)
+    //      setPrefixes(parseResult.prefixes)
+    //      setJenaRules(parseResult.rules)
+    //   })
   }, [])
 
-  // useEffect(() => {
-  //   ac_rest_manager.getAllRules((data) => {
-  //     if (data) {
-  //       setConsumerSystems(data)
-  //     }
-  //
-  //   })
-  // }, [])
-
-
-  const editRuleCallback = (close) => {
-    //console.log("reason", close)
-    setIsAdding(false)
+  const editRuleCallback = (newRule) => {
+    if (!newRule) {
+      setOpen({...open, [0]: false})
+    }
+    else {
+      ac_rest_manager.registerRule(newRule, (response) => {
+        console.log("Response", response)
+      })
+    }
   }
 
   const handleListItemClick = (event, iindex) => {
@@ -98,14 +106,7 @@ const Rules = (props) => {
 
     }
 
-    //console.log("SELECTED INDEX", iindex)
     setSelectedIndex(iindex - 1)
-  }
-
-  const handleAddRuleClick = () => {
-    //collapse all Rules
-    setIsAdding(true)
-    //console.info('you want to add', open)
   }
 
   var rules = <List>
@@ -120,7 +121,7 @@ const Rules = (props) => {
           </Typography>
       </ListItem>
       <Collapse in={open[0]} timeout="auto" unmountOnExit>
-        <EditRuleComponent callback={editRuleCallback}/>
+        <EditRuleComponent currentRules={jenaRules} callback={editRuleCallback} consumerSystems={consumerSystems}/>
       </Collapse>
     </div>
   {jenaRules.map((sitem, sindex) =>
@@ -154,8 +155,25 @@ const Rules = (props) => {
   var content =
     <div>
     <Prefixes />
-
     {rules}
+    <Dialog
+        open={openAlertDialog}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        {/*<DialogTitle id="alert-dialog-title">{}</DialogTitle>*/}
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            {message}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary" autoFocus>
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   return (content)
 }

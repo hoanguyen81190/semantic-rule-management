@@ -1,5 +1,6 @@
 import * as d3 from 'd3'
 import ONTOLOGY from './ontologyConstants'
+import * as colors from '@material-ui/core/colors'
 
 const NODE_RADIUS = 30
 const RECT_WIDTH = 80
@@ -14,15 +15,16 @@ function objColor(obj) {
 	var color = "white"
 
 	if (obj.ontology !== undefined) {
+		console.log("ontology", obj.ontology)
 		if (obj.ontology === '') {
-			color = ONTOLOGY.ontologyConstants.SAI.colorCode
+			color = ONTOLOGY.ontologyConstants.AUTO.colorCode
 		}
 		else {
 			color = ONTOLOGY.ontologyConstants[obj.ontology.toUpperCase()].colorCode
 		}
 	}
 	else if (!obj.isVar) {
-		color = "gray"
+		color = colors.blueGrey[200]
 	}
 	return color
 }

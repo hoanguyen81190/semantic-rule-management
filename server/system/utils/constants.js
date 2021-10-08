@@ -5,7 +5,8 @@ export const PROXY_APIS = {
   GET_ALL_RULES_2: "/getAllRules2",
   GET_KNOWLEDGE: "/getKnowledge",
   GET_ALL_QUERIES: "/getAllQueries",
-  TEST: "/test"
+  POST_REGISTER_RULE: "/register",
+  POST_DELETE_RULE: "/delete",
 }
 
 export const ARROWHEAD_CONSTANTS = {
@@ -18,8 +19,8 @@ export const AUTONOMIC_ORCHESTRATION_APIS = {
 	GET_ALL_RULES_2: "auto-orchestration-get-all-rules-2",
   GET_ALL_QUERIES: "auto-orchestration-get-all-queries",
 	GET_ALL_KNOWLEDGE: "auto-orchestration-get-knowledge",
-	REGISTER: "auto-orchestration-register",
-	DELETE: "auto-orchestration-delete",
+	REGISTER_RULE: "auto-orchestration-register",
+	DELETE_RULE: "auto-orchestration-delete",
 	PUSH: "auto-orchestration-push",
 	GET: "auto-orchestration-get-adapations"
 }
