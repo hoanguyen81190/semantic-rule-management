@@ -1,76 +1,59 @@
-import React, { useState, useEffect } from 'react';
-import { Redirect, Route, Switch } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
 
-import { makeStyles } from '@material-ui/core/styles';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import ListItemText from '@material-ui/core/ListItemText';
-import Avatar from '@material-ui/core/Avatar';
-import FolderIcon from '@material-ui/icons/Folder';
-import DeleteIcon from '@material-ui/icons/Delete';
-import IconButton from '@material-ui/core/IconButton';
-import { Typography } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles'
 import withStyles from '@material-ui/core/styles/withStyles'
+import IconButton from '@material-ui/core/IconButton'
+import { Typography } from '@material-ui/core'
+import RefreshIcon from '@material-ui/icons/Refresh'
 
-import store from '../../core/store';
-import ac_rest_manager from '../../core/ac_rest_manager.js';
+import ac_rest_manager from '../../core/ac_rest_manager.js'
+import { turtleParser } from '../../core/rdf_parser'
+
+import RDFGraph from '../../components/Rule/RDFGraph'
+import Prefixes from '../../components/Prefixes/Prefixes'
+import Divider from '@material-ui/core/Divider'
 
 const useStyles = makeStyles((theme) => ({
-
-}));
+  refreshButton: {
+    position: "left"
+    //backgroundColor: "red"
+  }
+}))
 
 const KnowledgeBase = (props) => {
-  //const classes = useStyles()
-  const { classes, ...rest } = props
-  const [dense, setDense] = React.useState(false)
+  const classes = useStyles()
   const [secondary, setSecondary] = React.useState(false)
-  const [knowledge, setKnowledge] = React.useState([])
+  const [rdfTriples, setRdfTriples] = React.useState([])
 
   const [selectedIndex, setSelectedIndex] = React.useState(false)
 
   useEffect(() => {
     ac_rest_manager.getKnowledge((data) => {
-      var knowledge_list = data.split('\n').filter(i => i)
-      console.log("knowledge", knowledge_list.length, knowledge_list)
-      setKnowledge(knowledge_list)
+      var turtleQuads = turtleParser(data)
+      setRdfTriples(turtleQuads)
     })
-  }, []);
+  }, [])
 
-  const handleListItemClick = (event, index) => {
-    setSelectedIndex(index);
-  };
-
-  const generate = (elements) => {
-    return elements.map((item, index) =>
-      <ListItem key={index}
-                onClick={event => handleListItemClick(event, index)}
-                selected={selectedIndex === index}>
-        <ListItemAvatar>
-          <Avatar>
-            <FolderIcon />
-          </Avatar>
-        </ListItemAvatar>
-        <ListItemText
-          primary={item}
-          secondary={secondary ? 'Secondary text' : null}
-        />
-        <ListItemSecondaryAction>
-          <IconButton edge="end" aria-label="delete">
-            <DeleteIcon />
-          </IconButton>
-        </ListItemSecondaryAction>
-      </ListItem>
-    );
+  const handleRefreshClick = (e , v) => {
+    console.log("refresh")
+    ac_rest_manager.getKnowledge((data) => {
+      var turtleQuads = turtleParser(data)
+      setRdfTriples(turtleQuads)
+    })
   }
 
-  const content =
-    <div className={"mainPage"}>
-      {generate(knowledge)}
-    </div>
-    return( content );
+  return( <div>
+  <Prefixes />
+  <Divider />
+  <IconButton className={classes.refreshButton} edge="end" aria-label="refresh" onClick={handleRefreshClick}>
+    <RefreshIcon />
+    <Typography>
+      Refresh
+    </Typography>
+  </IconButton>
+  <Divider />
+  <RDFGraph rdfTriples={rdfTriples} isEditable={false}/>
+  </div>)
 }
 
 

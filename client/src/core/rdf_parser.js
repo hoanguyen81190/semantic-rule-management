@@ -273,6 +273,7 @@ function quadToRDFModel(quad) {
 }
 
 export function quadsToRDFModels(quads) {
+  console.log("convert quads to model")
   var triples = []
   quads.map((titem, tindex) => {
     triples.push(quadToRDFModel(titem))
@@ -296,8 +297,7 @@ export function triplesToGraph(inputTriples){
 	}
 
   var triples = inputTriples
-
-  if (inputTriples[0].termType === 'Quad') {
+  if (inputTriples[0].termType === 'Quad' || inputTriples[0].graph !== undefined) {
     triples = quadsToRDFModels(inputTriples)
   }
 

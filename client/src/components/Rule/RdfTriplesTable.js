@@ -15,7 +15,8 @@ import { displayObjectText } from '../../core/rdf_parser'
 
 const useStyles = makeStyles((theme) => ({
   table: {
-
+    // borderTopWidth: 0.7,
+    // borderStyle: 'solid'
   }
 }))
 

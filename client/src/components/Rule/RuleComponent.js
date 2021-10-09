@@ -9,6 +9,7 @@ import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import Paper from '@material-ui/core/Paper'
 import Typography from '@material-ui/core/Typography'
+import Divider from '@material-ui/core/Divider'
 
 import RDFGraph from '../../components/Rule/RDFGraph'
 import RdfTriplesTable from './RdfTriplesTable'
@@ -27,7 +28,6 @@ const useStyles = makeStyles((theme) => ({
   list: {
     height: "70vh",
     width: "30%",
-    backgroundColor: theme.palette.background.paper,
     overflowY: "scroll"
   },
   graph: {
@@ -40,7 +40,8 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.text.secondary,
   },
   table: {
-
+    // borderTopWidth: 1,
+    // borderStyle: 'solid'
   }
 }))
 

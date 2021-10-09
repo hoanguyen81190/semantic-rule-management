@@ -73,3 +73,18 @@ export function constructQueryBuilder(prefixes, conditions1, conditions2, limit)
 
   return queryString
 }
+
+export function ontologyQueryBuilder(ontologyObj, limit) {
+  var query = []
+  // prefixes.map((pitem, pindex) => {
+  //   query.push(buildPrefixString(pitem))
+  // })
+  // query.push("")
+  //open
+  query.push("SELECT FROM <" + ontologyObj.url + ">")
+  query.push("WHERE { ?s ?p ?o }")
+  query.push("LIMIT " + limit)
+  var queryString = query.join('\n')
+
+  return queryString
+}

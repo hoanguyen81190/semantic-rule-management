@@ -24,14 +24,20 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Prefixes(props) {
+  const { onClickCallback } = props
   const classes = useStyles()
-  // <Divider orientation="vertical" flexItem />
-  // {ontologyConstants[k].url}
+
+  const handleOnClick = (ontology) => {
+    if (onClickCallback !== undefined) {
+      onClickCallback(ontology)
+    }
+  }
+
   var content =
     <div className={classes.section1}>
   {
     Object.keys(ONTOLOGY.ontologyConstants).map((k, index) => {
-      return <span key={"prefixes" + index} className="prefixChip" style={{backgroundColor: ONTOLOGY.ontologyConstants[k].colorCode}}>
+      return <span key={"prefixes" + index} onClick={(e, v) => handleOnClick(ONTOLOGY.ontologyConstants[k])} className="prefixChip" style={{backgroundColor: ONTOLOGY.ontologyConstants[k].colorCode}}>
         <Tooltip title={ONTOLOGY.ontologyConstants[k].url}>
           <Typography className={classes.dividerFullWidth}
                       display="initial"
