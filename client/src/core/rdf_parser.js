@@ -237,9 +237,13 @@ export function parseObject(objStr) {
   objStr = objStr.replace(/\'/g, '')
   var ontologyParts = objStr.split(':')
   if (ontologyParts.length > 1) {//belongs to an ontology
+    var ontologyName = ontologyParts[0]
+    if(ontologyName === '') {
+      ontologyName = DEFAULT_ONTOLOGY
+    }
     return {
       value: ontologyParts[1],
-      ontology: ontologyParts[0]
+      ontology: ontologyName
     }
   }
   else { //either variable or a literal
@@ -372,6 +376,7 @@ function buildPrefixes(prefixes) {
 }
 
 function buildRdfTriple(triple) {
+  console.log("triple", triple)
   if (triple.predicate.ontology === 'jena') {
     return triple.predicate.value + '(' + triple.subject.value + ' ' + triple.object.value + ')'
   }

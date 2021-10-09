@@ -344,6 +344,13 @@ export default function EditRuleComponent(props) {
 
   /*Handle delete triple*/
   const onDeleteTriple = (delete_index) => {
+    var delete_triple = edittingGraph.triples[delete_index]
+    if(delete_triple.subject.isVar) {
+      variablesList.splice(variablesList.indexOf(delete_triple.subject.value), 1)
+    }
+    if(delete_triple.object.isVar) {
+      variablesList.splice(variablesList.indexOf(delete_triple.subject.value), 1)
+    }
     edittingGraph.triples.splice(delete_index, 1)
     setRerender(rerender + 1)
   }

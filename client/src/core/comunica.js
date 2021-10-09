@@ -12,8 +12,22 @@ function buildConditionString(conditions) {
 }
 
 export const common_queries = {
-  get_all_classes: selectQueryBuilder([ONTOLOGY.ontologyConstants.AUTO, ONTOLOGY.ontologyConstants.SAI], ['?sai'], [['?sai', '?pai', 'owl:Class']], 1000),
+  get_all_classes: getAllObjectsQuery(),//selectQueryBuilder([ONTOLOGY.ontologyConstants.AUTO, ONTOLOGY.ontologyConstants.SAI], ['?sai'], [['?sai', '?pai', 'owl:Class']], 1000),
   get_all_properties: getAllPropertiesQuery()//selectQueryBuilder([ONTOLOGY.ontologyConstants.RDF], ['?sai'], [['?sai', '?pai', 'rdf:Property']], 1000)
+}
+
+function getAllObjectsQuery() {
+  var query = []
+  query.push(buildPrefixString(ONTOLOGY.ontologyConstants.AUTO))
+  query.push(buildPrefixString(ONTOLOGY.ontologyConstants.SAI))
+  query.push("")
+  //open
+  query.push("SELECT ?sai WHERE {")
+  query.push("{?sai ?pai owl:Class}")
+  query.push("UNION { ?sai ?pai owl:NamedIndividual}")
+  query.push("} LIMIT 1000")
+  var queryString = query.join('\n')
+  return queryString
 }
 
 function getAllPropertiesQuery() {
@@ -26,6 +40,7 @@ function getAllPropertiesQuery() {
   query.push("SELECT ?sai WHERE {")
   query.push("{?sai ?pai rdf:Property}")
   query.push("UNION { ?sai ?pai owl:ObjectProperty}")
+  query.push("UNION { ?sai ?pai owl:DatatypeProperty}")
   query.push("} LIMIT 1000")
   var queryString = query.join('\n')
   return queryString

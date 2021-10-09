@@ -69,21 +69,20 @@ const Rules = (props) => {
   }
 
   useEffect(() => {
-    fetch(jenaRuleExample)
-      .then(r => r.text())
-      .then(text => {
-        var output = jenaRuleParser(text)
-        console.log("output", output)
-        setJenaRules(output.rules)
-        //setRdfTriples(turtleQuads)
-      })
-    // ac_rest_manager.getAllRules((data) => {
-    //   if (data) {
-    //     var output = getRuleResponseParser(data, consumerSystems)
-    //     setConsumerSystems(output.systems)
+    // fetch(jenaRuleExample)
+    //   .then(r => r.text())
+    //   .then(text => {
+    //     var output = jenaRuleParser(text)
+    //     console.log("output", output)
     //     setJenaRules(output.rules)
-    //   }
-    // })
+    //   })
+    ac_rest_manager.getAllRules((data) => {
+      if (data) {
+        var output = getRuleResponseParser(data, consumerSystems)
+        setConsumerSystems(output.systems)
+        setJenaRules(output.rules)
+      }
+    })
   }, [])
 
   const editRuleCallback = (newRule) => {

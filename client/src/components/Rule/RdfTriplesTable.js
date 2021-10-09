@@ -44,7 +44,7 @@ export default function RdfTriplesTable(props) {
                 </TableCell>
                 <TableCell >{displayObjectText(titem.predicate)}</TableCell>
                 <TableCell >{displayObjectText(titem.object)}</TableCell>
-                {isEditting ? <TableCell><IconButton key="delete-triple-button" onClick={(e, i) => deleteCallback(titem)}>
+                {isEditting ? <TableCell><IconButton key="delete-triple-button" onClick={(e, i) => deleteCallback(tindex)}>
                                                   <DeleteIcon style={{fill: "#f50057"}}/>
                                                 </IconButton ></TableCell> : null}
               </TableRow>
