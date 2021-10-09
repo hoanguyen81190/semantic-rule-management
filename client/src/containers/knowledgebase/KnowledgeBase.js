@@ -15,8 +15,12 @@ import Divider from '@material-ui/core/Divider'
 
 const useStyles = makeStyles((theme) => ({
   refreshButton: {
-    position: "left"
+    zIndex: -1
     //backgroundColor: "red"
+  },
+  graph: {
+    backgroundColor: "green",
+    zIndex: 100
   }
 }))
 
@@ -52,7 +56,7 @@ const KnowledgeBase = (props) => {
     </Typography>
   </IconButton>
   <Divider />
-  <RDFGraph rdfTriples={rdfTriples} isEditable={false}/>
+  <RDFGraph className={classes.graph} rdfTriples={rdfTriples} isEditable={false}/>
   </div>)
 }
 

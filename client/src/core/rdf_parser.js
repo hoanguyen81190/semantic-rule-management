@@ -13,7 +13,7 @@ import * as ActionModel from "./actionModel"
 
 const ttl_read = require('@graphy/content.ttl.read')
 
-const DEFAULT_ONTOLOGY = "base"
+const DEFAULT_ONTOLOGY = "auto"
 const JENA_ONTOLOGY = "jena"
 
 export function getRuleResponseParser(response) {

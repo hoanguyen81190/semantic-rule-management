@@ -42,9 +42,7 @@ const Ontology = (props) => {
   }, [])
 
   const onSelectOntology = (ontology) => {
-    console.log("onclick", ontology.displayName)
     ac_rest_manager.sparqlQuery("construct", ontology.displayName, (data) => {
-      console.log("response", selectedOntology, data)
       if (data) {
         console.log("response", selectedOntology, data)
         setRdfTriples(data)

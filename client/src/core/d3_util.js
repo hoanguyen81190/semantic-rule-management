@@ -28,7 +28,7 @@ function objColor(obj) {
 	return color
 }
 
-export function updateGraph(svg, graph, force, width, height) {
+export function updateGraph(svg, zoom, graph, force, width, height) {
   var simulation = d3.forceSimulation()
     .force("link", d3.forceLink().id(function(d) { return d.id }))
     .force("charge", d3.forceManyBody().strength(-500))
@@ -48,7 +48,9 @@ export function updateGraph(svg, graph, force, width, height) {
   //               .attr("width", width)
   //               .attr("class", "graph-group")
 
-  svg.append("defs").selectAll("node")
+  svg.append("defs")
+					.selectAll("node")
+					//.select('svg g')
           .data(["end"])
           .enter().append("marker")
           .attr("id", String)
@@ -62,7 +64,9 @@ export function updateGraph(svg, graph, force, width, height) {
 					.attr("d", "M0,-5L10,0L0,5")
 
 
-  var first_link = svg.append("g")
+  var first_link = svg
+								//.select('svg g')
+								.append("g")
                 .selectAll("line")
                 .data(graph.first_links)
                 .enter().append("line")
@@ -71,20 +75,28 @@ export function updateGraph(svg, graph, force, width, height) {
                 .style("stroke", function(d) { return objColor(d.obj) })
                 //.attr("marker-end", "url(#end)")
 
-  var second_link = svg.append("g")
+  var second_link = svg
+								.select('svg g')
+								.append("g")
                 .selectAll("line")
                 .data(graph.second_links)
                 .enter().append("line")
                 .attr("class", "link")
+								.attr('cx', function(d) { return d.x; })
+		.attr('cy', function(d) { return d.y; })
                 .style("stroke-width", 3)
                 .style("stroke", function(d) { return objColor(d.obj) })
                 .attr("marker-end", "url(#end)")
   //.call(d3.behavior.zoom().scaleExtent([1, 200]).on("zoom", zoom))
-  var node = svg.append("g")
+  var node = svg
+						.select('svg g')
+						.append("g")
             .attr("class", "node")
             .selectAll("circle")
             .data(graph.nodes)
             .enter().append("circle")
+						.attr('cx', function(d) { return d.x; })
+    				.attr('cy', function(d) { return d.y; })
             .attr("r", NODE_RADIUS)
             .attr('stroke', 'black')
             .attr('fill', function(d) { return objColor(d.obj) })
@@ -94,7 +106,8 @@ export function updateGraph(svg, graph, force, width, height) {
               .on("drag", dragged)
               .on("end", dragended))
 
-  var label = svg.append("g")
+  var label = svg.select('svg g')
+			.append("g")
       .attr("class", "labels")
       .attr("dy", ".3em")
       .style("text-anchor", "middle")
@@ -107,7 +120,8 @@ export function updateGraph(svg, graph, force, width, height) {
         .attr("font-size", "10px")
         .text(function(d) { return d.label })
 
-  var predicate = svg.append("g")
+  var predicate = svg.select('svg g')
+						.append("g")
             .attr("class", "predicate")
             .selectAll("rect")
             .data(graph.predicates)
@@ -115,13 +129,16 @@ export function updateGraph(svg, graph, force, width, height) {
             .attr('width', RECT_WIDTH)
             .attr('height', RECT_HEIGHT)
             .attr('stroke', 'black')
+						.attr('cx', function(d) { return d.x; })
+.attr('cy', function(d) { return d.y; })
             .attr('fill', function(d) { return objColor(d.obj) })
             .call(d3.drag()
               .on("start", dragstarted)
               .on("drag", dragged)
               .on("end", dragended))
 
-  var linkLabel = svg.append("g")
+  var linkLabel = svg.select('svg g')
+										.append("g")
                     .attr("class", "labels")
                     .selectAll("text")
                     .data(graph.predicates)

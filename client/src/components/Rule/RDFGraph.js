@@ -30,20 +30,32 @@ export default function RDFGraph(props) {
 	const [editNode, setEditNode] = React.useState(null)
 
   useEffect(() => {
-		// let zoom = d3.zoom()
-		// 							.scaleExtent([1, 5])
-		// 							.translateExtent([[0, 0], [width, height]])
-		// 							.on('zoom', handleZoom)
-    const svg = d3.select(svgRef.current)//.call(zoom)
+		let zoom = d3.zoom()
+									.on('zoom', handleZoom)
+    const svg = d3.select(svgRef.current).call(zoom)
     svg.selectAll("*").remove()
   	var force = d3.forceSimulation()
 		var graph = triplesToGraph(rdfTriples)
 
-    updateGraph(svg, graph, force, width, height)
+    //initZoom()
+    updateGraph(svg, zoom, graph, force, width, height)
+
+    function handleZoom(e) {
+      d3.select('svg g')
+        .attr('transform', e.transform);
+    }
+    function initZoom() {
+      d3.select('svg')
+        .call(zoom);
+    }
+
+
   }, [rdfTriples, isEditable, rerender])
 
   return (
-    <svg ref={svgRef} id="rdfGraphCanvas" className="rdfGraphCanvas" width={500} height={500}>
+    <svg ref={svgRef} id="rdfGraphCanvas"
+          style={{backgroundColor: "#eceff1"}}
+          className="rdfGraphCanvas" width={500} height='50vh'>
       <g className="marker" />
       <g className="node" />
       <g className="link" />
