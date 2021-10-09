@@ -35,7 +35,7 @@ import ac_rest_manager from '../../core/ac_rest_manager.js'
 
 import jenaRuleExample from './TestConsumer.rule'
 import sosaTurtle from './sosa.ttl'
-import { jenaRuleParser, turtleParser, getRuleResponseParser } from '../../core/rdf_parser'
+import { getRuleResponseParser, buildJenaRuleRequest } from '../../core/rdf_parser'
 
 const useStyles = makeStyles((theme) => ({
 
@@ -53,7 +53,8 @@ const Rules = (props) => {
   const [selectedIndex, setSelectedIndex] = React.useState(-1)
   const [open, setOpen] = React.useState({})
 
-  var consumerSystems = []
+  const [consumerSystems, setConsumerSystems] = React.useState([])
+  const [rerender, setRerender] = React.useState(0)
 
   const handleClick = () => {
 
@@ -70,19 +71,11 @@ const Rules = (props) => {
     ac_rest_manager.getAllRules((data) => {
       if (data) {
         var output = getRuleResponseParser(data, consumerSystems)
-        consumerSystems = output.systems
-        console.log("GET ALL RULES", output)
+        setConsumerSystems(output.systems)
         setJenaRules(output.rules)
       }
 
     })
-    // fetch(jenaRuleExample)
-    //   .then(r => r.text())
-    //   .then(text => {
-    //      var parseResult = jenaRuleParser(text)
-    //      setPrefixes(parseResult.prefixes)
-    //      setJenaRules(parseResult.rules)
-    //   })
   }, [])
 
   const editRuleCallback = (newRule) => {
@@ -90,8 +83,18 @@ const Rules = (props) => {
       setOpen({...open, [0]: false})
     }
     else {
-      ac_rest_manager.registerRule(newRule, (response) => {
-        console.log("Response", response)
+      var jenaRule = buildJenaRuleRequest(newRule)
+      ac_rest_manager.registerRule(jenaRule, (response) => {
+        if (response.status === 200) { //succeeded
+          console.log("NEW RULE", newRule)
+          jenaRules.push(newRule)
+          setOpenAlertDialog(true)
+          setMessage("Rule " + newRule.name + " has been added for the system " + newRule.systemName)
+          setOpen({...open, [0]: false})
+        }
+        else { //failed
+          setMessage("Error! can not add rule " + newRule.name + " for the system " + newRule.systemName)
+        }
       })
     }
   }
@@ -107,6 +110,16 @@ const Rules = (props) => {
     }
 
     setSelectedIndex(iindex - 1)
+  }
+
+  const handleDeleteRule = (index) => {
+    var jenaRule = buildJenaRuleRequest(jenaRules[index])
+    ac_rest_manager.deleteRule(jenaRule, (response) => {
+      if(response.status === 200) { //succeeded
+        jenaRules.splice(index, 1)
+        setRerender(rerender + 1)
+      }
+    })
   }
 
   var rules = <List>
@@ -138,7 +151,7 @@ const Rules = (props) => {
           <ListItemText primary={sitem.systemName + ': ' + sitem.name} />
           {open[sindex + 1] ? <ExpandLess /> : <ExpandMore />}
           <ListItemSecondaryAction>
-            <IconButton edge="end" aria-label="delete">
+            <IconButton edge="end" aria-label="delete" onClick={(e, v) => handleDeleteRule(sindex)}>
               <DeleteIcon />
             </IconButton>
           </ListItemSecondaryAction>

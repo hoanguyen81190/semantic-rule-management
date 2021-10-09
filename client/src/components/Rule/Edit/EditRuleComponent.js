@@ -27,7 +27,7 @@ import RDFGraph from '../RDFGraph'
 import RdfTriplesTable from '../RdfTriplesTable'
 import ac_rest_manager from '../../../core/ac_rest_manager'
 import { constructQueryBuilder, selectQueryBuilder, common_queries } from '../../../core/comunica'
-import { convertToAutoCompleteRDF, parseObject, displayObjectText, buildJenaRuleRequest } from '../../../core/rdf_parser'
+import { convertToAutoCompleteRDF, parseObject, displayObjectText } from '../../../core/rdf_parser'
 import store from '../../../core/store'
 import ONTOLOGY from "../../../core/ontologyConstants"
 import './EditFact.css'
@@ -168,7 +168,7 @@ export default function EditRuleComponent(props) {
       //   }
       })
     }
-  }, [])
+  }, [consumerSystems])
 
   function triplesToQueryConditions() {
     //var triples = edittingGraph.triples.filter(triple => triple.subject.value === variable || triple.object.value === variable)
@@ -311,14 +311,20 @@ export default function EditRuleComponent(props) {
         (t.systemName === editSystemNameRef.current.value) &&
           (t.name === editRuleNameRef.current.value)
       ))
-      if (duplicatedName === -1) {
-        setErrorMessage('Duplicated Rule ' + editRuleNameRef.current.value + 'for system ' + editSystemNameRef.current.value)
+
+      if (duplicatedName !== -1) {
+        setErrorMessage('Rule ' + editRuleNameRef.current.value + ' has existed for system' + editSystemNameRef.current.value)
       }
       else {
-        var jenaRule = buildJenaRuleRequest(edittingGraph.prefixes, editSystemNameRef.current.value,
-                          editRuleNameRef.current.value, edittingGraph.triples, editActionList)
-        console.log("FINAL FANTASY", jenaRule)
-        callback(jenaRule)
+        setErrorMessage('')
+        callback({
+          systemName: editSystemNameRef.current.value,
+          name: editRuleNameRef.current.value,
+          statement: {
+            body: edittingGraph.triples,
+            head: editActionList
+          }
+        })
       }
     }
   }

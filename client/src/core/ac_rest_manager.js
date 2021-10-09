@@ -46,13 +46,13 @@ class ACRESTManager {
 
   registerRule(rule, callback) {
     axios.post(AC_Rest_APIs.POST_REGISTER_RULE, rule)
-          .then((response) => this.handleData(response, callback))
+          .then((response) => callback(response))
           .catch((error) => this.handleError(error))
   }
 
   deleteRule(rule, callback) {
     axios.post(AC_Rest_APIs.POST_DELETE_RULE, rule)
-          .then((response) => this.handleData(response, callback))
+          .then((response) => callback(response))
           .catch((error) => this.handleError(error))
   }
 

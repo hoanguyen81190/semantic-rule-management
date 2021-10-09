@@ -42,13 +42,13 @@ export function getRuleResponseParser(response) {
 export function turtleParser(stringInput) {
   var results = []
   ttl_read(stringInput, {
-      // whew! simplified inline events style  ;)
+      // whew! simplified inline events style  )
       data(y_quad) {
           results.push(y_quad)
       },
 
       eof(h_prefixes) {
-          console.log('done!');
+          console.log('done!')
       },
   })
   return results
@@ -76,7 +76,7 @@ function extractPrefixes(stringInput) {
 }
 
 function extractRules(stringInput) {
-  var rulesText = stringInput.replace(/(\r\n|\n|\r)/gm, ' ');
+  var rulesText = stringInput.replace(/(\r\n|\n|\r)/gm, ' ')
   var ruleRegex = new RegExp('#( )*\\[([^\\]]+)\\]', 'g')
   var rules = []
   var match
@@ -92,6 +92,7 @@ function parseRule(ruleString) {
   var ruleRegex = /(?<=\[).+?(?=\])/i
   var rule = ruleRegex.exec(ruleString)
   var name = rule[0].substr(0, rule[0].indexOf(':'))
+  var name = name.replace(/ /g, '')
   var statement = rule[0].substr(rule[0].indexOf(':')+1)
 
   //PARSE STATEMENT
@@ -280,11 +281,11 @@ export function quadsToRDFModels(quads) {
 }
 
 function filterNodesById(nodes,id){
-	return nodes.filter(function(n) { return n.id === id; });
+	return nodes.filter(function(n) { return n.id === id })
 }
 
 function filterNodesByType(nodes,value){
-	return nodes.filter(function(n) { return n.type === value; });
+	return nodes.filter(function(n) { return n.type === value })
 }
 
 export function triplesToGraph(inputTriples){
@@ -395,10 +396,9 @@ function buildStatement(statement) {
 function buildRule(ruleName, statement, actions) {
   return '[' + ruleName + ': ' + buildStatement(statement) + ' -> ' + buildAction(actions) + ']'
 }
-export function buildJenaRuleRequest(prefixes, consumerName, ruleName, statement, actions) {
+export function buildJenaRuleRequest(newRule) {
   return {
-    systemName: consumerName,
-    rules: [buildRule(ruleName, statement, actions)],
-    prefixes: buildPrefixes(prefixes)
+    systemName: newRule.systemName,
+    rules: [buildRule(newRule.name, newRule.statement.body, newRule.statement.head)]
   }
 }

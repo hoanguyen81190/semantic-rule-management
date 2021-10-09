@@ -15,7 +15,6 @@ function objColor(obj) {
 	var color = "white"
 
 	if (obj.ontology !== undefined) {
-		console.log("ontology", obj.ontology)
 		if (obj.ontology === '') {
 			color = ONTOLOGY.ontologyConstants.AUTO.colorCode
 		}

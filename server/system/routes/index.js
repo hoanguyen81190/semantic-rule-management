@@ -99,11 +99,12 @@ router.post(PROXY_APIS.POST_REGISTER_RULE, (req, res, next) => {
 })
 
 router.post(PROXY_APIS.POST_DELETE_RULE, (req, res, next) => {
+  var payload = req.body
   var flags = OrchestrationFlags(false, true, false, false, false, false, false, false, false)
   var orchestrator_form = OrchestratorFormBuilder(AUTONOMIC_ORCHESTRATION_APIS.DELETE_RULE,
                                                   flags, HTTP_INTERFACES.INTERFACE_SECURE)
   orchestration(orchestrator_form, '/', (orchestration_response) => {
-    consumeServiceHTTP(orchestration_response.response[0], (data) => {
+    consumeServiceHTTP(orchestration_response.response[0], payload, (data) => {
       res.json({succeed: true, data: data})
     })
 
