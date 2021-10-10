@@ -5,7 +5,7 @@ const ontologyConstants = {
     url: "http://www.semanticweb.org/an.nlam/ontologies/2017/1/AutoIoT#",
     name: "",
     displayName: "AutoIoT",
-    colorCode: colors.blueGrey[500]
+    colorCode: colors.indigo[300]
   },
   SAI: {
     url: "https://arrowhead.eu/arrowheadtools/sai#",
@@ -51,37 +51,37 @@ const ontologyConstants = {
   },
   SAN: {
     url: "http://www.irit.fr/recherches/MELODI/ontologies/SAN#",
-    name: "san",
+    name: "SAN",
     displayName: "SAN",
     colorCode: colors.amber[300]
   },
   DUL: {
     url: "http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#",
-    name: "dul",
+    name: "DUL",
     displayName: "DUL",
     colorCode: colors.cyan[300]
   },
   DOGONT: {
     url: "http://elite.polito.it/ontologies/dogont.owl#",
-    name: "dogont",
+    name: "DOGONT",
     displayName: "DogOnt",
     colorCode: colors.lime[300]
   },
   MSM: {
     url: "http://iserve.kmi.open.ac.uk/ns/msm#",
-    name: "msm",
+    name: "MSM",
     displayName: "MSM",
     colorCode: colors.teal[300]
   },
   IOTO: {
     url: "http://www.irit.fr/recherches/MELODI/ontologies/IoT-O#",
-    name: "ioto",
-    displayName: "IoTo",
-    colorCode: colors.indigo[300]
+    name: "IOTO",
+    displayName: "IOTO",
+    colorCode: colors.blueGrey[500]
   },
   SSN: {
     url: "http://purl.oclc.org/NET/ssnx/ssn#",
-    name: "ssn",
+    name: "SSN",
     colorCode: colors.green[800]
   },
   MUO: {

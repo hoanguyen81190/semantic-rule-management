@@ -11,21 +11,17 @@ export const SUBSTITUTE_ACTION = "substituteService"
 export const CONFIGURATION_ACTION = "configure"
 
 export class SubstituteActionModel {
-  constructor(consumer, fromService, fromProducer, toService, toProducer) {
+  constructor(consumer, fromService, toService) {
     this.type = SUBSTITUTE_ACTION
     this.consumer = consumer
     this.fromService = fromService
-    this.fromProducer = fromProducer
     this.toService = toService
-    this.toProducer = toProducer
   }
 
   getString() {
     return SUBSTITUTE_ACTION + '(' + buildObjectString(this.consumer) + ', '
                                    + buildObjectString(this.fromService) + ', '
-                                   + buildObjectString(this.fromProducer) + ', '
-                                   + buildObjectString(this.toService) + ', '
-                                   + buildObjectString(this.toProducer) + ')'
+                                   + buildObjectString(this.toService) + ')'
   }
 
   getDisplayComponent(key, edit) {
@@ -49,23 +45,9 @@ export class SubstituteActionModel {
           </Tooltip>
         </TableCell>
         <TableCell >
-          <Tooltip title="from provider">
-            <Typography display="initial" variant="caption">
-              {displayObjectText(this.fromProducer)}
-            </Typography>
-          </Tooltip>
-        </TableCell>
-        <TableCell >
           <Tooltip title="to service">
             <Typography display="initial" variant="caption">
               {displayObjectText(this.toService)}
-            </Typography>
-          </Tooltip>
-        </TableCell>
-        <TableCell >
-          <Tooltip title="to producer">
-            <Typography display="initial" variant="caption">
-              {displayObjectText(this.toProducer)}
             </Typography>
           </Tooltip>
         </TableCell>
@@ -118,8 +100,6 @@ export class ConfigureActionModel {
             </Typography>
           </Tooltip>
         </TableCell>
-        <TableCell />
-        <TableCell />
         {edit ? <TableCell><IconButton key="delete-action-button" onClick={(e, i) => edit.deleteCallback(key)}>
                                           <DeleteIcon style={{fill: "#f50057"}}/>
                                         </IconButton ></TableCell> : null}

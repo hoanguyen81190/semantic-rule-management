@@ -46,15 +46,13 @@ export default function EditAction(props) {
 
   const updateActionClick = (event, index) => {
     if (action === ActionModel.SUBSTITUTE_ACTION) {
-      if (selectedVariables.length !== 5) {
-        setErrorMessage("Substitution action requires 5 parameters")
+      if (selectedVariables.length !== 3) {
+        setErrorMessage("Substitution action requires 3 parameters")
       }
       else {
         onCloseCallback(true, new ActionModel.SubstituteActionModel(selectedVariables[0],
                                                                     selectedVariables[1],
-                                                                    selectedVariables[2],
-                                                                    selectedVariables[3],
-                                                                    selectedVariables[4]))
+                                                                    selectedVariables[2]))
       }
     }
     else if (action === ActionModel.CONFIGURATION_ACTION) {
@@ -73,7 +71,7 @@ export default function EditAction(props) {
     onCloseCallback(false, null)
   }
 
-  var placeHolder = action === ActionModel.SUBSTITUTE_ACTION? 'consumer, from service, from producer, to service, to producer' : 'consumer, attribute, value'
+  var placeHolder = action === ActionModel.SUBSTITUTE_ACTION? 'consumer, from service, to service' : 'consumer, attribute, value'
 
   return (
     <Dialog

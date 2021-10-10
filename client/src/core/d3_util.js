@@ -23,7 +23,7 @@ function objColor(obj) {
 		}
 	}
 	else if (!obj.isVar) {
-		color = colors.blueGrey[200]
+		color = colors.blueGrey[100]
 	}
 	return color
 }

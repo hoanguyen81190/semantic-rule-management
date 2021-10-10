@@ -15,8 +15,6 @@ import Divider from '@material-ui/core/Divider'
 
 const useStyles = makeStyles((theme) => ({
   refreshButton: {
-    zIndex: -1
-    //backgroundColor: "red"
   },
   graph: {
     backgroundColor: "green",

@@ -7,7 +7,6 @@ object: string
 */
 import rdfParser from "rdf-parse"
 import { RDFTriple } from "./rdfModel"
-import * as RdfString from "rdf-string"
 import ONTOLOGY from "./ontologyConstants"
 import * as ActionModel from "./actionModel"
 
@@ -159,8 +158,6 @@ function parseSubstituteAction(actionString) {
     parseObject(parts[0]),
     parseObject(parts[1]),
     parseObject(parts[2]),
-    parseObject(parts[3]),
-    parseObject(parts[4])
   )
 }
 
@@ -263,21 +260,34 @@ export function parseObject(objStr) {
 
 //-------------------------GRAPH--------------------------
 function parseURLName(urlObj) {
-  var parts = urlObj.value.split('#')
-  return {
-    value: parts[1],
-    ontology: ONTOLOGY.ontologyLookUp.get(parts[0])
+  console.log(urlObj.constructor.name, urlObj.termType)
+  if (urlObj.termType === 'NamedNode') {
+    var parts = urlObj.value.split('#')
+    return {
+      value: parts[1],
+      ontology: ONTOLOGY.ontologyLookUp.get(parts[0])
+    }
+  }
+  else {
+    return {
+      value: urlObj.value,
+      isVar: false
+    }
   }
 }
 function quadToRDFModel(quad) {
-  return new RDFTriple(parseURLName(quad.subject),
+  var newTriple = new RDFTriple(parseURLName(quad.subject),
                        parseURLName(quad.predicate),
-                       parseURLName(quad.object)
-                        )
+                       parseURLName(quad.object))
+  if (newTriple.predicate.value === "hasBody") {
+    newTriple = new RDFTriple(parseURLName(quad.subject),
+                         parseURLName(quad.predicate),
+                         parseURLName({value: "", isVar: false}))
+  }
+  return newTriple
 }
 
 export function quadsToRDFModels(quads) {
-  console.log("convert quads to model")
   var triples = []
   quads.map((titem, tindex) => {
     triples.push(quadToRDFModel(titem))
@@ -299,7 +309,7 @@ export function triplesToGraph(inputTriples){
 	if (inputTriples === undefined || inputTriples.length === 0) {
 		return graph
 	}
-
+  console.log("input triples", inputTriples)
   var triples = inputTriples
   if (inputTriples[0].termType === 'Quad' || inputTriples[0].graph !== undefined) {
     triples = quadsToRDFModels(inputTriples)
