@@ -35,7 +35,7 @@ const ontologyConstants = {
     url: "http://www.w3.org/2001/XMLSchema#",
     name: "xsd",
     displayName: "XSD",
-    colorCode: colors.deepPurple[400]
+    colorCode: colors.blueGrey[100]
   },
   JENA: {
     url: "built-in functions from Jena",

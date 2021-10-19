@@ -38,7 +38,7 @@ export function getRuleResponseParser(response) {
 
 //-----------------------------------------------------------
 
-export function turtleParser(stringInput) {
+export function turtleParser(stringInput, callback) {
   var results = []
   ttl_read(stringInput, {
       // whew! simplified inline events style  )
@@ -47,10 +47,11 @@ export function turtleParser(stringInput) {
       },
 
       eof(h_prefixes) {
+          callback(results)
           console.log('done!')
       },
   })
-  return results
+  //return results
 }
 
 //------------------------------------------------------------
@@ -260,7 +261,6 @@ export function parseObject(objStr) {
 
 //-------------------------GRAPH--------------------------
 function parseURLName(urlObj) {
-  console.log(urlObj.constructor.name, urlObj.termType)
   if (urlObj.termType === 'NamedNode') {
     var parts = urlObj.value.split('#')
     return {
@@ -309,7 +309,7 @@ export function triplesToGraph(inputTriples){
 	if (inputTriples === undefined || inputTriples.length === 0) {
 		return graph
 	}
-  console.log("input triples", inputTriples)
+
   var triples = inputTriples
   if (inputTriples[0].termType === 'Quad' || inputTriples[0].graph !== undefined) {
     triples = quadsToRDFModels(inputTriples)
@@ -386,7 +386,6 @@ function buildPrefixes(prefixes) {
 }
 
 function buildRdfTriple(triple) {
-  console.log("triple", triple)
   if (triple.predicate.ontology === 'jena') {
     return triple.predicate.value + '(' + triple.subject.value + ' ' + triple.object.value + ')'
   }

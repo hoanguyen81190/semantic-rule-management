@@ -11,19 +11,33 @@ import { Typography } from '@material-ui/core'
 import store from '../../core/store'
 import ac_rest_manager from '../../core/ac_rest_manager.js'
 
-//import sosaTurtle from './sosa.ttl'
+import Grid from '@material-ui/core/Grid'
+import RdfTriplesTable from '../../components/Rule/RdfTriplesTable'
 import saiOWL from './AutoIoT.ttl'
-import { jenaRuleParser, turtleParser } from '../../core/rdf_parser'
+import { jenaRuleParser, turtleParser, quadsToRDFModels } from '../../core/rdf_parser'
 import { ontologyQueryBuilder } from '../../core/comunica'
 import ONTOLOGY from '../../core/ontologyConstants'
 
 const useStyles = makeStyles((theme) => ({
-
-}));
+  root: {
+    //layout: 1,
+    height: "100%",
+    width: "100%"
+  },
+  list: {
+    height: "100vh",
+    width: "30%",
+    overflowY: "scroll",
+  },
+  graph: {
+    height: "100vh",
+    width: "70%",
+  }
+}))
 
 const Ontology = (props) => {
   //const classes = useStyles()
-  const { classes, ...rest } = props
+  const classes = useStyles()
   const [dense, setDense] = React.useState(false)
   const [secondary, setSecondary] = React.useState(false)
   const [rdfTriples, setRdfTriples] = React.useState([])
@@ -37,7 +51,7 @@ const Ontology = (props) => {
   useEffect(() => {
     ac_rest_manager.sparqlQuery("construct", selectedOntology.displayName, (data) => {
       console.log("response useEffect", data)
-      setRdfTriples(data)
+      setRdfTriples(quadsToRDFModels(data))
     })
   }, [])
 
@@ -45,20 +59,28 @@ const Ontology = (props) => {
     ac_rest_manager.sparqlQuery("construct", ontology.displayName, (data) => {
       if (data) {
         console.log("response", selectedOntology, data)
-        setRdfTriples(data)
+        setRdfTriples(quadsToRDFModels(data))
         setSelectedOntology(ontology)
       }
     })
   }
 
-  return( <div>
+  return( <div className={classes.megaRoot}>
   <Prefixes onClickCallback={onSelectOntology}/>
   <Divider />
   <Typography>
     {selectedOntology.displayName}
   </Typography>
   <Divider />
-  <RDFGraph rdfTriples={rdfTriples} isEditable={false} />
+  <Grid container className={classes.root} spacing={2}>
+    <Grid key="list" className={classes.list} item>
+      <RdfTriplesTable rdfTriples={rdfTriples} isEditting={false}/>
+    </Grid>
+    <Grid key="graph" className={classes.graph} item>
+      <RDFGraph rdfTriples={rdfTriples} isEditable={false} />
+    </Grid>
+  </Grid>
+
   </div>)
 }
 

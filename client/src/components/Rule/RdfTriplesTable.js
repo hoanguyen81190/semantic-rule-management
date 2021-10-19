@@ -27,6 +27,8 @@ export default function RdfTriplesTable(props) {
   useEffect(() => {
   }, [rdfTriples])
 
+  console.log("table", rdfTriples)
+
   return (
         <Table className={classes.table} aria-label="simple table">
           <TableHead>
