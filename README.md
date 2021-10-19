@@ -18,3 +18,6 @@ The tool consumes 6 services from Autonomic Orchestration
 
 ## III. Start
 Run "start.bat" in "semantic_rule_management/server/system"
+
+## IV. Example clients
+Example clients can be found here [demo_October](https://github.com/hoanguyen81190/demo_October). 
